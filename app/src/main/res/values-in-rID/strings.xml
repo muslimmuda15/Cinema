@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Sinema</string>
+    <string name="loading">Tunggu sebentar</string>
+    <string name="movie">tontonan</string>
+    <string name="tv">televisi</string>
+    <string name="more">lainnya</string>
+    <string name="change_language">Ganti bahasa</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="language">Bahasa</string>
+    <string name="english">Ingris</string>
+    <string name="indonesia">Nusantara</string>
+
+    <string name="unknown_error">Kesalahan yang tak di ketahui</string>
+    <string name="no_preview">Tidak ada ulasan</string>
+</resources>

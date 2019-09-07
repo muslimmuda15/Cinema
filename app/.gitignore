@@ -1,0 +1,16 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+/build
+node_modules
+/captures
+.externalNativeBuild
+/bak
+*.bak
+app/libs/
+app/release/
+app/src/main/assets/menu/
+app/debug/
+app/dev/

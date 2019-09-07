@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.app.rachmad.movie.MainActivity">
+
+    <item
+        android:title="@string/more"
+        android:icon="@drawable/ic_more_vert_black_24dp"
+        android:orderInCategory="100"
+        app:showAsAction="always">
+
+        <menu>
+            <item
+                android:id="@+id/change_language"
+                android:icon="@drawable/ic_translate_black_24dp"
+                android:title="@string/language"
+                app:showAsAction="ifRoom" />
+        </menu>
+    </item>
+</menu>

@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Cinemas</string>
+    <string name="loading">Please wait</string>
+    <string name="movie">movie</string>
+    <string name="tv">tv</string>
+    <string name="more">more</string>
+    <string name="change_language">Change Language</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="language">Language</string>
+    <string name="english">English</string>
+    <string name="indonesia">Indonesia</string>
+
+    <string name="unknown_error">Unknow error</string>
+    <string name="no_preview">No preview</string>
+</resources>
