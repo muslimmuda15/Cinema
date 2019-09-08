@@ -1,5 +1,6 @@
 package com.app.rachmad.movie.ui.tv
 
+import android.graphics.drawable.Drawable
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,10 @@ import com.app.rachmad.movie.GlideApp
 import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.movie.TvItemFragment
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 
 import kotlinx.android.synthetic.main.fragment_tv_item.view.*
 import java.text.SimpleDateFormat
@@ -41,6 +46,17 @@ class TvItemRecyclerViewAdapter(
             GlideApp.with(holder.image)
                     .load(BuildConfig.IMAGE_URL + item.poster_path)
                     .fitCenter()
+                    .listener(object: RequestListener<Drawable> {
+                        override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            return false
+                        }
+
+                        override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                            holder.imageLoading.stopShimmer()
+                            holder.imageLoading.setShimmer(null)
+                            return false
+                        }
+                    })
                     .into(holder.image)
 
             with(holder) {
@@ -73,6 +89,7 @@ class TvItemRecyclerViewAdapter(
         val date = mView.date
         val ratingStar = mView.rating_star
         val ratingText = mView.rate_text
+        val imageLoading = mView.image_layout
     }
 
     companion object {

@@ -11,6 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -96,6 +97,8 @@ class MainActivity : AppCompatActivity(), MovieItemFragment.OnMovieClickListener
         setupLanguage()
 
         setSupportActionBar(toolbar)
+        toolbar.setBackgroundColor(ContextCompat.getColor(toolbar.context, R.color.colorPrimary))
+
         bottom_navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
         val pagerAdapter = PagerAdapter(supportFragmentManager, 2)

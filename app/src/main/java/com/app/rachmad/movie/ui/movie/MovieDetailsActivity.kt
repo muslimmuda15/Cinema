@@ -4,12 +4,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -22,8 +24,15 @@ import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
 import com.app.rachmad.movie.ui.tv.TV_EXTRA
 import com.app.rachmad.movie.viewmodel.ListModel
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.activity_movie_details.*
+import kotlinx.android.synthetic.main.activity_movie_details.image
+import kotlinx.android.synthetic.main.activity_movie_details.rating_star
 import kotlinx.android.synthetic.main.custom_chip.view.*
+import kotlinx.android.synthetic.main.fragment_tv_item.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -53,11 +62,33 @@ class MovieDetailsActivity : AppCompatActivity() {
                 GlideApp.with(image)
                         .load(BuildConfig.IMAGE_URL + backdrop_path)
                         .centerCrop()
+                        .listener(object: RequestListener<Drawable> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                back_drop_image_layout.stopShimmer()
+                                back_drop_image_layout.setShimmer(null)
+                                return false
+                            }
+                        })
                         .into(image)
 
                 GlideApp.with(poster_image)
                         .load(BuildConfig.IMAGE_URL + poster_path)
                         .centerCrop()
+                        .listener(object: RequestListener<Drawable> {
+                            override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                return false
+                            }
+
+                            override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                poster_image_layout.stopShimmer()
+                                poster_image_layout.setShimmer(null)
+                                return false
+                            }
+                        })
                         .into(poster_image)
 
                 title_movie.text = title
@@ -96,6 +127,9 @@ class MovieDetailsActivity : AppCompatActivity() {
         movieData = intent.getParcelableExtra(MOVIE_EXTRA) as MovieData
 
         setSupportActionBar(toolbar)
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary))
+        toolbar.background.alpha = 0
+
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
