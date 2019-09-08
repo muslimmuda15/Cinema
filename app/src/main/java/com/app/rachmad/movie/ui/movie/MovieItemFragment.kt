@@ -1,4 +1,4 @@
-package com.app.rachmad.movie.movie
+package com.app.rachmad.movie.ui.movie
 
 import android.animation.AnimatorInflater
 import android.content.Context
@@ -9,37 +9,28 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.ConfigurationCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
-import com.app.rachmad.movie.MainActivity
+import com.app.rachmad.movie.ui.MainActivity
 import com.app.rachmad.movie.R
-import com.app.rachmad.movie.`object`.TvData
+import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
-import com.app.rachmad.movie.tv.TvItemRecyclerViewAdapter
 import com.app.rachmad.movie.viewmodel.ListModel
-import kotlinx.android.synthetic.main.fragment_tv_item_list.*
+import kotlinx.android.synthetic.main.fragment_movie_item_list.*
 
-class TvItemFragment : Fragment() {
-    private var listener: OnTvClickListener? = null
-    lateinit var adapter: TvItemRecyclerViewAdapter
+class MovieItemFragment : Fragment() {
+    private var listener: OnMovieClickListener? = null
+    lateinit var adapter: MovieItemRecyclerViewAdapter
     lateinit var viewModel: ListModel
 
-    override fun onResume() {
-        super.onResume()
-
-//        accessData()
-    }
-
     private fun accessData(){
-        val connection = viewModel?.connectionTv()
-        viewModel?.tv(LanguageProvide.getLanguage(this.context))
+        val connection = viewModel.connectionMovie()
+        viewModel.movie(LanguageProvide.getLanguage(this.context))
 
         if (list is RecyclerView) {
-            connection?.observe(this, Observer<Int> {
+            connection.observe(this, Observer<Int> {
                 if(statusConnection(it)) {
-                    adapter.submitList(viewModel?.getTvList())
+                    adapter.submitList(viewModel.getMovieList())
                     adapter.notifyDataSetChanged()
                 }
             })
@@ -51,8 +42,8 @@ class TvItemFragment : Fragment() {
             when(it){
                 Status.LOADING -> {
                     loading_layout.visibility = ViewGroup.VISIBLE
-                    tv_loading.visibility = View.VISIBLE
-                    tv_error.visibility = View.GONE
+                    movie_loading.visibility = View.VISIBLE
+                    movie_error.visibility = View.GONE
                     list.visibility = ViewGroup.GONE
 
                     val animator = AnimatorInflater.loadAnimator(this.context, R.animator.fade_out)
@@ -63,18 +54,18 @@ class TvItemFragment : Fragment() {
                 }
                 Status.ACCEPTED -> {
                     loading_layout.visibility = ViewGroup.GONE
-                    tv_loading.visibility = View.GONE
-                    tv_error.visibility = View.GONE
+                    movie_loading.visibility = View.GONE
+                    movie_error.visibility = View.GONE
                     list.visibility = ViewGroup.VISIBLE
-                    tv_refresh.isRefreshing = false
+                    movie_refresh.isRefreshing = false
                     return true
                 }
                 else -> {
                     loading_layout.visibility = ViewGroup.VISIBLE
-                    tv_loading.visibility = View.GONE
-                    tv_error.visibility = View.VISIBLE
+                    movie_loading.visibility = View.GONE
+                    movie_error.visibility = View.VISIBLE
                     list.visibility = ViewGroup.GONE
-                    tv_refresh.isRefreshing = false
+                    movie_refresh.isRefreshing = false
                     sendError()
                     return false
                 }
@@ -86,13 +77,13 @@ class TvItemFragment : Fragment() {
     }
 
     private fun sendError(){
-        val error = viewModel.errorTv()
-        tv_error.text = error?.let { it.status_message } ?: run { getString(R.string.unknown_error) }
+        val error = viewModel.errorMovie()
+        movie_error.text = error?.status_message ?: run { "" }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_tv_item_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_movie_item_list, container, false)
         viewModel = (activity as MainActivity).viewModel!!
         return view
     }
@@ -100,19 +91,19 @@ class TvItemFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        adapter = TvItemRecyclerViewAdapter(listener)
+        accessData()
+
+        adapter = MovieItemRecyclerViewAdapter(viewModel, listener)
         list.layoutManager = LinearLayoutManager(context)
         list.adapter = adapter
 
-        accessData()
-
-        tv_refresh.setOnRefreshListener {
-            viewModel.refreshTv()
+        movie_refresh.setOnRefreshListener {
+            viewModel.refreshMovie()
+            movie_refresh.isRefreshing = true
             accessData()
-            tv_refresh.isRefreshing = true
         }
 
-        viewModel.doLoadingTv().observe(this, Observer<Boolean> {
+        viewModel.doLoadingMovie().observe(this, Observer<Boolean> {
             val animator = AnimatorInflater.loadAnimator(this.context, if(it)
                 R.animator.fade_in
             else
@@ -125,7 +116,7 @@ class TvItemFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnTvClickListener) {
+        if (context is OnMovieClickListener) {
             listener = context
         } else {
             throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
@@ -137,12 +128,7 @@ class TvItemFragment : Fragment() {
         listener = null
     }
 
-    interface OnTvClickListener {
-        fun onClickTv(item: TvData)
-    }
-
-    companion object {
-        @JvmStatic
-        fun newInstance() = TvItemFragment()
+    interface OnMovieClickListener {
+        fun onClickMovie(item: MovieData)
     }
 }

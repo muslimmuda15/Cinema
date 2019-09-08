@@ -1,4 +1,4 @@
-package com.app.rachmad.movie
+package com.app.rachmad.movie.ui
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -16,18 +16,17 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
+import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.TvData
-import com.app.rachmad.movie.details.MOVIE_EXTRA
-import com.app.rachmad.movie.details.MovieDetailsActivity
-import com.app.rachmad.movie.details.TV_EXTRA
-import com.app.rachmad.movie.details.TvDetailsActivity
+import com.app.rachmad.movie.ui.details.MOVIE_EXTRA
+import com.app.rachmad.movie.ui.details.MovieDetailsActivity
+import com.app.rachmad.movie.ui.details.TV_EXTRA
+import com.app.rachmad.movie.ui.details.TvDetailsActivity
 import com.app.rachmad.movie.helper.LanguageProvide
-import com.app.rachmad.movie.movie.MovieItemFragment
+import com.app.rachmad.movie.ui.movie.MovieItemFragment
 import com.app.rachmad.movie.movie.TvItemFragment
 import com.app.rachmad.movie.viewmodel.ListModel
-import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.module.AppGlideModule
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -50,13 +49,13 @@ class MainActivity : AppCompatActivity(), MovieItemFragment.OnMovieClickListener
     override fun onClickMovie(item: MovieData) {
         val intent = Intent(this, MovieDetailsActivity::class.java)
         intent.putExtra(MOVIE_EXTRA, item)
-//        startActivity(intent)
+        startActivity(intent)
     }
 
     override fun onClickTv(item: TvData) {
         val intent = Intent(this, TvDetailsActivity::class.java)
         intent.putExtra(TV_EXTRA, item)
-//        startActivity(intent)
+        startActivity(intent)
     }
 
     private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -153,6 +152,3 @@ class MainActivity : AppCompatActivity(), MovieItemFragment.OnMovieClickListener
         super.onDestroy()
     }
 }
-
-@GlideModule
-class MyAppGlideModule : AppGlideModule()

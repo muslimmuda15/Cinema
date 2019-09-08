@@ -5,6 +5,11 @@
     <string name="tv">tv</string>
     <string name="more">more</string>
     <string name="change_language">Change Language</string>
+    <plurals name="votes">
+        <item quantity="zero">No vote</item>
+        <item quantity="one">%1$d vote</item>
+        <item quantity="other">%1$d votes</item>
+    </plurals>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="language">Language</string>

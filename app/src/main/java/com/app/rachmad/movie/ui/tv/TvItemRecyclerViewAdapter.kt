@@ -1,4 +1,4 @@
-package com.app.rachmad.movie.tv
+package com.app.rachmad.movie.ui.tv
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater

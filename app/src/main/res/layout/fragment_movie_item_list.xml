@@ -59,7 +59,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:context=".movie.MovieItemFragment"
+            tools:context=".ui.movie.MovieItemFragment"
             tools:listitem="@layout/fragment_movie_item" />
 
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar

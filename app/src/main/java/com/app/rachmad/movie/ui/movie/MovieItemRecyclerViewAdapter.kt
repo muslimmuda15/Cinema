@@ -1,6 +1,5 @@
-package com.app.rachmad.movie.movie
+package com.app.rachmad.movie.ui.movie
 
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View

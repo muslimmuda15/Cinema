@@ -3,38 +3,41 @@ package com.app.rachmad.movie.movie
 import android.animation.AnimatorInflater
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import androidx.core.os.ConfigurationCompat
 import androidx.lifecycle.Observer
-import com.app.rachmad.movie.MainActivity
+import com.app.rachmad.movie.ui.MainActivity
 import com.app.rachmad.movie.R
-import com.app.rachmad.movie.`object`.MovieData
+import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
+import com.app.rachmad.movie.ui.tv.TvItemRecyclerViewAdapter
 import com.app.rachmad.movie.viewmodel.ListModel
-import kotlinx.android.synthetic.main.fragment_movie_item_list.*
-import java.util.*
+import kotlinx.android.synthetic.main.fragment_tv_item_list.*
 
-class MovieItemFragment : Fragment() {
-    private var listener: OnMovieClickListener? = null
-    lateinit var adapter: MovieItemRecyclerViewAdapter
+class TvItemFragment : Fragment() {
+    private var listener: OnTvClickListener? = null
+    lateinit var adapter: TvItemRecyclerViewAdapter
     lateinit var viewModel: ListModel
 
+    override fun onResume() {
+        super.onResume()
+
+//        accessData()
+    }
+
     private fun accessData(){
-        val connection = viewModel.connectionMovie()
-        viewModel.movie(LanguageProvide.getLanguage(this.context))
+        val connection = viewModel.connectionTv()
+        viewModel.tv(LanguageProvide.getLanguage(this.context))
 
         if (list is RecyclerView) {
             connection.observe(this, Observer<Int> {
                 if(statusConnection(it)) {
-                    adapter.submitList(viewModel.getMovieList())
+                    adapter.submitList(viewModel.getTvList())
                     adapter.notifyDataSetChanged()
                 }
             })
@@ -46,8 +49,8 @@ class MovieItemFragment : Fragment() {
             when(it){
                 Status.LOADING -> {
                     loading_layout.visibility = ViewGroup.VISIBLE
-                    movie_loading.visibility = View.VISIBLE
-                    movie_error.visibility = View.GONE
+                    tv_loading.visibility = View.VISIBLE
+                    tv_error.visibility = View.GONE
                     list.visibility = ViewGroup.GONE
 
                     val animator = AnimatorInflater.loadAnimator(this.context, R.animator.fade_out)
@@ -58,18 +61,18 @@ class MovieItemFragment : Fragment() {
                 }
                 Status.ACCEPTED -> {
                     loading_layout.visibility = ViewGroup.GONE
-                    movie_loading.visibility = View.GONE
-                    movie_error.visibility = View.GONE
+                    tv_loading.visibility = View.GONE
+                    tv_error.visibility = View.GONE
                     list.visibility = ViewGroup.VISIBLE
-                    movie_refresh.isRefreshing = false
+                    tv_refresh.isRefreshing = false
                     return true
                 }
                 else -> {
                     loading_layout.visibility = ViewGroup.VISIBLE
-                    movie_loading.visibility = View.GONE
-                    movie_error.visibility = View.VISIBLE
+                    tv_loading.visibility = View.GONE
+                    tv_error.visibility = View.VISIBLE
                     list.visibility = ViewGroup.GONE
-                    movie_refresh.isRefreshing = false
+                    tv_refresh.isRefreshing = false
                     sendError()
                     return false
                 }
@@ -81,13 +84,13 @@ class MovieItemFragment : Fragment() {
     }
 
     private fun sendError(){
-        val error = viewModel.errorMovie()
-        movie_error.text = error?.status_message ?: run { "" }
+        val error = viewModel.errorTv()
+        tv_error.text = error?.status_message ?: run { getString(R.string.unknown_error) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_movie_item_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_tv_item_list, container, false)
         viewModel = (activity as MainActivity).viewModel!!
         return view
     }
@@ -95,19 +98,19 @@ class MovieItemFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        accessData()
-
-        adapter = MovieItemRecyclerViewAdapter(viewModel, listener)
+        adapter = TvItemRecyclerViewAdapter(listener)
         list.layoutManager = LinearLayoutManager(context)
         list.adapter = adapter
 
-        movie_refresh.setOnRefreshListener {
-            viewModel.refreshMovie()
-            movie_refresh.isRefreshing = true
+        accessData()
+
+        tv_refresh.setOnRefreshListener {
+            viewModel.refreshTv()
             accessData()
+            tv_refresh.isRefreshing = true
         }
 
-        viewModel.doLoadingMovie().observe(this, Observer<Boolean> {
+        viewModel.doLoadingTv().observe(this, Observer<Boolean> {
             val animator = AnimatorInflater.loadAnimator(this.context, if(it)
                 R.animator.fade_in
             else
@@ -120,7 +123,7 @@ class MovieItemFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnMovieClickListener) {
+        if (context is OnTvClickListener) {
             listener = context
         } else {
             throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
@@ -132,7 +135,7 @@ class MovieItemFragment : Fragment() {
         listener = null
     }
 
-    interface OnMovieClickListener {
-        fun onClickMovie(item: MovieData)
+    interface OnTvClickListener {
+        fun onClickTv(item: TvData)
     }
 }

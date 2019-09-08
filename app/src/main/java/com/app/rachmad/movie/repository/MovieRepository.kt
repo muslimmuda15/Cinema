@@ -18,29 +18,55 @@ import retrofit2.Response
 
 class MovieRepository{
     var connectionMovieList = MutableLiveData<Int>()
-    var connectionTvList = MutableLiveData<Int>()
-    var connectionGenreMovie = MutableLiveData<Int>()
-    var connectionGenreTv = MutableLiveData<Int>()
-
+    var connectionMovieDetail = MutableLiveData<Int>()
     val movieDataSource = MovieDataSource()
-    val tvDataSource = TvDataSource()
-
     var errorMovieList: ErrorData? = null
-    var errorTvList: ErrorData? = null
-
+    var errorMovieDetails: ErrorData? = null
     var movieList: PagedList<MovieData>? = null
-    var tvList: PagedList<TvData>? = null
+    var movieDetailsData: MovieDetailData? = null
 
     fun refreshMovie(){
         connectionMovieList.value = null
-        connectionGenreMovie.value = null
         movieList = null
     }
 
-    fun refreshTv(){
-        connectionGenreTv.value = null
-        connectionTvList.value = null
-        tvList = null
+    fun refreshMovieDetail(){
+        connectionMovieDetail.value = null
+        movieDetailsData = null
+    }
+
+    fun movieDetails(movieId: Int, language: String){
+        if(connectionMovieDetail.value == null && movieDetailsData == null){
+            var service = MovieSite.connect()
+            val call = service.movieDetail(movieId, language)
+
+            connectionMovieDetail.value = Status.LOADING
+            call.enqueue(object: Callback<MovieDetailData>{
+                override fun onFailure(call: Call<MovieDetailData>, t: Throwable) {
+                    errorMovieDetails = ErrorData(Status.UNKNOWN, t.message)
+                    connectionMovieDetail.value = -1
+                    t.printStackTrace()
+                }
+
+                override fun onResponse(call: Call<MovieDetailData>, response: Response<MovieDetailData>) {
+                    if(response.isSuccessful){
+                        response.body()?.let {
+                            movieDetailsData = it
+                            connectionMovieDetail.value = Status.ACCEPTED
+                        } ?: run {
+                            connectionMovieList.value = -1
+                        }
+                    }
+                    else{
+                        val type = object: TypeToken<ErrorData>() {}.type
+                        val error = Gson().fromJson<ErrorData>(response.errorBody()?.charStream(), type)
+
+                        errorMovieDetails = ErrorData(error.status_code, error.status_message)
+                        connectionMovieDetail.value = error.status_code
+                    }
+                }
+            })
+        }
     }
 
     fun movie(language: String){
@@ -93,64 +119,6 @@ class MovieRepository{
 
                         errorMovieList = ErrorData(error.status_code, error.status_message)
                         connectionMovieList.value = error.status_code
-                    }
-                }
-            })
-        }
-    }
-
-    fun tv(language: String){
-        if(connectionTvList.value == null) {
-            val service = MovieSite.connect()
-            val call = service.tvSite(1, language)
-
-            connectionTvList.value = Status.LOADING
-            call.enqueue(object : Callback<TvBaseData> {
-                override fun onFailure(call: Call<TvBaseData>, t: Throwable) {
-                    errorTvList = ErrorData(Status.UNKNOWN, t.message)
-                    connectionTvList.value = -1
-                    Log.d("OkHttp", "TV FAILURE")
-                    t.printStackTrace()
-                }
-
-                override fun onResponse(call: Call<TvBaseData>, response: Response<TvBaseData>) {
-                    Log.d("OkHttp", "TV SUCCESS")
-                    if(response.isSuccessful) {
-                        Log.d("OkHttp", "TV IS SUCCESS")
-                        response.body()?.let {
-                            if (it.total_pages > 0) {
-                                tvDataSource.setData(it.results, language)
-                                val exec = MainThreadExecutor()
-                                val config: PagedList.Config = PagedList.Config.Builder()
-                                        .setPageSize(it.total_results)
-                                        .setInitialLoadSizeHint(20)
-                                        .setEnablePlaceholders(false)
-                                        .setPrefetchDistance(2)
-                                        .build()
-
-                                val tvPagedList = PagedList.Builder(tvDataSource, config)
-                                        .setFetchExecutor(exec)
-                                        .setNotifyExecutor(exec).build()
-
-                                tvList = tvPagedList
-                                connectionTvList.value = Status.ACCEPTED
-
-                            } else {
-                                errorTvList = ErrorData(Status.EMPTY_DATA, "")
-                                connectionTvList.value = -1
-                            }
-                        } ?: run {
-                            errorTvList = ErrorData(Status.UNKNOWN, "")
-                            connectionTvList.value = -1
-                        }
-                    }
-                    else{
-                        Log.d("OkHttp", "TV NOT SUCCESS : ")
-                        val type = object: TypeToken<ErrorData>() {}.type
-                        val error = Gson().fromJson<ErrorData>(response.errorBody()?.charStream(), type)
-
-                        errorTvList = ErrorData(error.status_code, error.status_message)
-                        connectionTvList.value = error.status_code
                     }
                 }
             })

@@ -5,6 +5,9 @@
     <string name="tv">televisi</string>
     <string name="more">lainnya</string>
     <string name="change_language">Ganti bahasa</string>
+    <plurals name="votes">
+        <item quantity="other">%1$d suara</item>
+    </plurals>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="language">Bahasa</string>
