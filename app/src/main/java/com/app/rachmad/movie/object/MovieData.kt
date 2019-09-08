@@ -4,53 +4,53 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class MovieData(
+        val poster_path: String?,
+        val adult: Boolean,
+        val overview: String,
+        val release_date: String,
+        val genre_ids: IntArray,
+        val id: Int,
+        val original_title: String,
+        val original_language: String,
+        val title: String,
+        val backdrop_path: String?,
         val popularity: Float,
         val vote_count: Int,
         val video: Boolean,
-        val poster_path: String,
-        val id: Int,
-        val adult: Boolean,
-        val backdrop_path: String,
-        val original_language: String,
-        val original_title: String?,
-        val genre_ids: List<String>,
-        val title: String,
-        val vote_average: Float,
-        val overview: String,
-        val release_date: String
+        val vote_average: Float
 ): Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readFloat(),
-            parcel.readInt(),
-            parcel.readByte() != 0.toByte(),
             parcel.readString(),
-            parcel.readInt(),
             parcel.readByte() != 0.toByte(),
             parcel.readString(),
             parcel.readString(),
+            parcel.createIntArray(),
+            parcel.readInt(),
             parcel.readString(),
-            parcel.createStringArrayList(),
+            parcel.readString(),
+            parcel.readString(),
             parcel.readString(),
             parcel.readFloat(),
-            parcel.readString(),
-            parcel.readString()) {
+            parcel.readInt(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readFloat()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(poster_path)
+        parcel.writeByte(if (adult) 1 else 0)
+        parcel.writeString(overview)
+        parcel.writeString(release_date)
+        parcel.writeIntArray(genre_ids)
+        parcel.writeInt(id)
+        parcel.writeString(original_title)
+        parcel.writeString(original_language)
+        parcel.writeString(title)
+        parcel.writeString(backdrop_path)
         parcel.writeFloat(popularity)
         parcel.writeInt(vote_count)
         parcel.writeByte(if (video) 1 else 0)
-        parcel.writeString(poster_path)
-        parcel.writeInt(id)
-        parcel.writeByte(if (adult) 1 else 0)
-        parcel.writeString(backdrop_path)
-        parcel.writeString(original_language)
-        parcel.writeString(original_title)
-        parcel.writeStringList(genre_ids)
-        parcel.writeString(title)
         parcel.writeFloat(vote_average)
-        parcel.writeString(overview)
-        parcel.writeString(release_date)
     }
 
     override fun describeContents(): Int {

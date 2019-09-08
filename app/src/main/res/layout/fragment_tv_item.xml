@@ -89,6 +89,26 @@
                 android:layout_marginBottom="@dimen/margin_normal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/overview" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/double_margin"
+                android:layout_marginBottom="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/rating_star"
+                app:contentPaddingLeft="@dimen/margin_normal"
+                app:contentPaddingRight="@dimen/margin_normal"
+                app:contentPaddingTop="@dimen/quarter_margin"
+                app:contentPaddingBottom="@dimen/quarter_margin"
+                app:cardBackgroundColor="@color/red">
+
+                <TextView
+                    android:id="@+id/rate_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white" />
+            </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

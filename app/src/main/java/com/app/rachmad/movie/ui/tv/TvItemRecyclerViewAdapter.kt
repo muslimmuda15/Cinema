@@ -56,6 +56,7 @@ class TvItemRecyclerViewAdapter(
                 date.text = df.format(newDate)
 
                 ratingStar.rating = item.vote_average / 2
+                ratingText.text = item.vote_average.toString()
             }
 
             with(holder.mView) {
@@ -71,6 +72,7 @@ class TvItemRecyclerViewAdapter(
         val overview = mView.overview
         val date = mView.date
         val ratingStar = mView.rating_star
+        val ratingText = mView.rate_text
     }
 
     companion object {

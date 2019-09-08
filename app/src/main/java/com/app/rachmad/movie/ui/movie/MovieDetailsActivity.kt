@@ -1,4 +1,4 @@
-package com.app.rachmad.movie.ui.details
+package com.app.rachmad.movie.ui.movie
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -16,38 +16,40 @@ import androidx.lifecycle.ViewModelProviders
 import com.app.rachmad.movie.BuildConfig
 import com.app.rachmad.movie.GlideApp
 import com.app.rachmad.movie.R
-import com.app.rachmad.movie.`object`.TvData
-import com.app.rachmad.movie.`object`.TvDetailData
+import com.app.rachmad.movie.`object`.MovieData
+import com.app.rachmad.movie.`object`.MovieDetailData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
+import com.app.rachmad.movie.ui.tv.TV_EXTRA
 import com.app.rachmad.movie.viewmodel.ListModel
-import kotlinx.android.synthetic.main.activity_tv_details.*
+import kotlinx.android.synthetic.main.activity_movie_details.*
 import kotlinx.android.synthetic.main.custom_chip.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-const val TV_EXTRA = "TvExtra"
-class TvDetailsActivity : AppCompatActivity() {
-    private lateinit var tvData: TvData
-    private lateinit var viewModel: ListModel
+const val MOVIE_EXTRA = "MovieExtra"
+class MovieDetailsActivity : AppCompatActivity() {
+    lateinit var movieData: MovieData
+    lateinit var viewModel: ListModel
     var imageHeight = 0
 
     private val langReceiver by lazy {
         object: BroadcastReceiver(){
             override fun onReceive(c: Context, i: Intent) {
                 Log.d("language", "LANGUAGE CHANGED TO " + Locale.getDefault().getCountry())
-                val data = intent.getParcelableExtra(TV_EXTRA) as TvData
+                val data = intent.getParcelableExtra(TV_EXTRA) as MovieData
 
-                viewModel?.refreshTvDetail()
-                viewModel?.tvDetail(data.id, LanguageProvide.getLanguage(c))
+                viewModel?.refreshMovieDetail()
+                viewModel?.movieDetail(data.id, LanguageProvide.getLanguage(c))
             }
         }
     }
 
-    private fun loadData(tvDetailData: TvDetailData?){
-        tvDetailData?.let {
-            with(tvDetailData) {
-                supportActionBar?.title = HtmlCompat.fromHtml("<font color='#ffffff'>$title</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+
+    private fun loadData(movieDetailData: MovieDetailData?){
+        movieDetailData?.let {
+            with(movieDetailData) {
+                supportActionBar?.title = HtmlCompat.fromHtml("<font color='#ffffff'>${title}</font>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 GlideApp.with(image)
                         .load(BuildConfig.IMAGE_URL + backdrop_path)
                         .centerCrop()
@@ -58,11 +60,14 @@ class TvDetailsActivity : AppCompatActivity() {
                         .centerCrop()
                         .into(poster_image)
 
-                title_tv.text = title
-                overview_text.text = overview
+                title_movie.text = title
+                overview_text.text = if(overview.isNullOrBlank())
+                    HtmlCompat.fromHtml("<i>${getString(R.string.no_preview)}</i>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+                else
+                    overview
 
                 var df = SimpleDateFormat("yyyy-mm-dd", Locale.US)
-                val newDate = df.parse(first_air_date)
+                val newDate = df.parse(release_date)
                 df = SimpleDateFormat("MMM yyyy", Locale.US)
                 date_release.text = df.format(newDate)
 
@@ -83,12 +88,12 @@ class TvDetailsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tv_details)
+        setContentView(R.layout.activity_movie_details)
 
         viewModel = ViewModelProviders.of(this).get(ListModel::class.java)
         setupLanguage()
 
-        tvData = intent.getParcelableExtra(TV_EXTRA) as TvData
+        movieData = intent.getParcelableExtra(MOVIE_EXTRA) as MovieData
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -96,12 +101,12 @@ class TvDetailsActivity : AppCompatActivity() {
         supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
         supportActionBar?.setDisplayShowTitleEnabled(true)
 
-        val connection = viewModel.connectionTvDetail()
-        viewModel.tvDetail(tvData.id, LanguageProvide.getLanguage(this))
+        val connection = viewModel.connectionMovieDetail()
+        viewModel.movieDetail(movieData.id, LanguageProvide.getLanguage(this))
 
         connection.observe(this, Observer<Int> {
             if(statusConnection(it)){
-                loadData(viewModel.getTvDetail())
+                loadData(viewModel.getMovieDetail())
             }
         })
 
@@ -113,22 +118,22 @@ class TvDetailsActivity : AppCompatActivity() {
             when(it){
                 Status.LOADING -> {
                     loading_layout.visibility = ViewGroup.VISIBLE
-                    tv_loading.visibility = View.VISIBLE
-                    tv_error.visibility = View.GONE
+                    movie_loading.visibility = View.VISIBLE
+                    movie_error.visibility = View.GONE
                     scroll.visibility = ViewGroup.GONE
                     return false
                 }
                 Status.ACCEPTED -> {
                     loading_layout.visibility = ViewGroup.GONE
-                    tv_loading.visibility = View.GONE
-                    tv_error.visibility = View.GONE
+                    movie_loading.visibility = View.GONE
+                    movie_error.visibility = View.GONE
                     scroll.visibility = ViewGroup.VISIBLE
                     return true
                 }
                 else -> {
                     loading_layout.visibility = ViewGroup.VISIBLE
-                    tv_loading.visibility = View.GONE
-                    tv_error.visibility = View.VISIBLE
+                    movie_loading.visibility = View.GONE
+                    movie_error.visibility = View.VISIBLE
                     scroll.visibility = ViewGroup.GONE
                     sendError()
                     return false
@@ -141,8 +146,8 @@ class TvDetailsActivity : AppCompatActivity() {
     }
 
     private fun sendError(){
-        val error = viewModel.errorTvDetail()
-        tv_error.text = error?.status_message ?: run { "" }
+        val error = viewModel.errorMovieDetail()
+        movie_error.text = error?.status_message ?: run { "" }
     }
 
     private fun setupListener(){
@@ -162,9 +167,10 @@ class TvDetailsActivity : AppCompatActivity() {
             else if(scroll.scrollY > 0){
                 val transparent = ((scroll.scrollY.toFloat() / imageHeight.toFloat()) * 255.toFloat()).toInt()
                 Log.d("scroll", "(${scroll.scrollY.toFloat()} / ${imageHeight.toFloat()}) * ${255.toFloat()}")
-                Log.d("scroll", "transparent : $transparent")
-                if (transparent <= 255)
+                Log.d("scroll", "transparent : " + transparent)
+                if (transparent <= 255) {
                     toolbar.background.alpha = transparent
+                }
                 else if(transparent > 255)
                     toolbar.background.alpha = 255
             }
@@ -182,6 +188,10 @@ class TvDetailsActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

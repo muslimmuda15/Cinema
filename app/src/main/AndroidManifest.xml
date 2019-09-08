@@ -13,7 +13,9 @@
         android:supportsRtl="true"
         android:name=".App"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.details.TvDetailsActivity"></activity>
+        <activity
+            android:name=".ui.tv.TvDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
@@ -24,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.details.MovieDetailsActivity"
+            android:name=".ui.movie.MovieDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

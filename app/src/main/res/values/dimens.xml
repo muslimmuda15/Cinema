@@ -5,6 +5,7 @@
     <dimen name="margin_strange">8dp</dimen>
     <dimen name="half_margin">4dp</dimen>
     <dimen name="quarter_margin">2dp</dimen>
+    <dimen name="no_margin">0dp</dimen>
     <dimen name="title_font">16sp</dimen>
     <dimen name="normal_font">12sp</dimen>
     <dimen name="chip_font">5sp</dimen>

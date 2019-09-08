@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.app.rachmad.movie.ui.details.MovieDetailsActivity">
+    tools:context="com.app.rachmad.movie.ui.movie.MovieDetailsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

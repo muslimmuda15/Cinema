@@ -19,10 +19,10 @@ import androidx.viewpager.widget.ViewPager
 import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.TvData
-import com.app.rachmad.movie.ui.details.MOVIE_EXTRA
-import com.app.rachmad.movie.ui.details.MovieDetailsActivity
-import com.app.rachmad.movie.ui.details.TV_EXTRA
-import com.app.rachmad.movie.ui.details.TvDetailsActivity
+import com.app.rachmad.movie.ui.movie.MOVIE_EXTRA
+import com.app.rachmad.movie.ui.movie.MovieDetailsActivity
+import com.app.rachmad.movie.ui.tv.TV_EXTRA
+import com.app.rachmad.movie.ui.tv.TvDetailsActivity
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.ui.movie.MovieItemFragment
 import com.app.rachmad.movie.movie.TvItemFragment
