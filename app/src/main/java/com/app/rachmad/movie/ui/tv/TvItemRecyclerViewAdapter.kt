@@ -48,6 +48,7 @@ class TvItemRecyclerViewAdapter(
                     .fitCenter()
                     .listener(object: RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                            holder.imageLoading.stopShimmer()
                             return false
                         }
 

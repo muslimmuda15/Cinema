@@ -1,5 +1,6 @@
 package com.app.rachmad.movie.repository
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
@@ -54,9 +55,10 @@ class TvRepository {
                         }
                     }
                     else{
-                        val type = object: TypeToken<ErrorData>() {}.type
-                        val error = Gson().fromJson<ErrorData>(response.errorBody()?.charStream(), type)
-
+                        val errorResponse = response.errorBody().toString()
+//                        val type = object: TypeToken<ErrorData>() {}.type
+//                        val error = Gson().fromJson<ErrorData>(response.errorBody()?.charStream(), type)
+                        val error = Gson().fromJson(errorResponse, ErrorData::class.java)
                         errorTvDetails = ErrorData(error.status_code, error.status_message)
                         connectionTvDetail.value = error.status_code
                     }

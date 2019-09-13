@@ -16,4 +16,13 @@
 
     <string name="unknown_error">Kesalahan yang tak di ketahui</string>
     <string name="no_preview">Tidak ada ulasan</string>
+
+    <string name="story_line">Alur cerita</string>
+    <string name="creator">Pembuat</string>
+    <string name="production">Perusahaan Produksi</string>
+
+    <string name="unfavorite_title">Hapus favorite?</string>
+    <string name="unfavorite_description">Anda yakin ingin menghilangkan favorite?</string>
+    <string name="yes">Ya</string>
+    <string name="no">Tidak</string>
 </resources>

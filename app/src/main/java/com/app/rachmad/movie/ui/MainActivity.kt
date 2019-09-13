@@ -31,18 +31,17 @@ import com.app.rachmad.movie.viewmodel.ListModel
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
-class MainActivity : AppCompatActivity(), MovieItemFragment.OnMovieClickListener, TvItemFragment.OnTvClickListener {
-    var viewModel: ListModel? = null
+class MainActivity : BaseActivity(), MovieItemFragment.OnMovieClickListener, TvItemFragment.OnTvClickListener {
     private val langReceiver by lazy {
         object: BroadcastReceiver(){
             override fun onReceive(c: Context, i: Intent) {
                 Log.d("language", "LANGUAGE CHANGED TO " + Locale.getDefault().getCountry())
 
-                viewModel?.refreshMovie()
-                viewModel?.movie(LanguageProvide.getLanguage(c))
+                viewModel.refreshMovie()
+                viewModel.movie(LanguageProvide.getLanguage(c))
 
-                viewModel?.refreshTv()
-                viewModel?.tv(LanguageProvide.getLanguage(c))
+                viewModel.refreshTv()
+                viewModel.tv(LanguageProvide.getLanguage(c))
             }
         }
     }
@@ -93,7 +92,6 @@ class MainActivity : AppCompatActivity(), MovieItemFragment.OnMovieClickListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        viewModel = ViewModelProviders.of(this).get(ListModel::class.java)
         setupLanguage()
 
         setSupportActionBar(toolbar)

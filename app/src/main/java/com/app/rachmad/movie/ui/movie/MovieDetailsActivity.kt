@@ -10,11 +10,9 @@ import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.app.rachmad.movie.BuildConfig
 import com.app.rachmad.movie.GlideApp
 import com.app.rachmad.movie.R
@@ -22,8 +20,10 @@ import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.MovieDetailData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
+import com.app.rachmad.movie.sqlite.table.FavoriteTable
+import com.app.rachmad.movie.ui.BaseActivity
+import com.app.rachmad.movie.ui.helper.UnfavoriteDialog
 import com.app.rachmad.movie.ui.tv.TV_EXTRA
-import com.app.rachmad.movie.viewmodel.ListModel
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -31,15 +31,14 @@ import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.activity_movie_details.*
 import kotlinx.android.synthetic.main.activity_movie_details.image
 import kotlinx.android.synthetic.main.activity_movie_details.rating_star
+import kotlinx.android.synthetic.main.custom_cast.view.*
 import kotlinx.android.synthetic.main.custom_chip.view.*
-import kotlinx.android.synthetic.main.fragment_tv_item.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 const val MOVIE_EXTRA = "MovieExtra"
-class MovieDetailsActivity : AppCompatActivity() {
+class MovieDetailsActivity : BaseActivity() {
     lateinit var movieData: MovieData
-    lateinit var viewModel: ListModel
     var imageHeight = 0
 
     private val langReceiver by lazy {
@@ -48,8 +47,8 @@ class MovieDetailsActivity : AppCompatActivity() {
                 Log.d("language", "LANGUAGE CHANGED TO " + Locale.getDefault().getCountry())
                 val data = intent.getParcelableExtra(TV_EXTRA) as MovieData
 
-                viewModel?.refreshMovieDetail()
-                viewModel?.movieDetail(data.id, LanguageProvide.getLanguage(c))
+                viewModel.refreshMovieDetail()
+                viewModel.movieDetail(data.id, LanguageProvide.getLanguage(c))
             }
         }
     }
@@ -80,6 +79,7 @@ class MovieDetailsActivity : AppCompatActivity() {
                         .centerCrop()
                         .listener(object: RequestListener<Drawable> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                poster_image_layout.stopShimmer()
                                 return false
                             }
 
@@ -113,6 +113,36 @@ class MovieDetailsActivity : AppCompatActivity() {
                     genres_layout.addView(genreCard)
 
                 }
+
+                if(production_companies.size > 0) {
+                    production_layout.visibility = ViewGroup.VISIBLE
+
+                    production_companies.forEach {
+                        val creators = layoutInflater.inflate(R.layout.custom_cast, null) as FrameLayout
+                        GlideApp.with(creators.image_cast)
+                                .load(BuildConfig.IMAGE_URL + it.logo_path)
+                                .centerCrop()
+                                .listener(object : RequestListener<Drawable> {
+                                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                        creators.image_shimmer.stopShimmer()
+                                        return false
+                                    }
+
+                                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                        creators.image_shimmer.stopShimmer()
+                                        creators.image_shimmer.setShimmer(null)
+                                        return false
+                                    }
+                                })
+                                .into(creators.image_cast)
+
+                        creators.name_cast.text = it.name
+                        production_list.addView(creators)
+                    }
+                }
+                else{
+                    production_layout.visibility = ViewGroup.GONE
+                }
             }
         }
     }
@@ -120,8 +150,6 @@ class MovieDetailsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_details)
-
-        viewModel = ViewModelProviders.of(this).get(ListModel::class.java)
         setupLanguage()
 
         movieData = intent.getParcelableExtra(MOVIE_EXTRA) as MovieData
@@ -185,12 +213,7 @@ class MovieDetailsActivity : AppCompatActivity() {
     }
 
     private fun setupListener(){
-        image.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener{
-            override fun onGlobalLayout() {
-                image.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                imageHeight = image.measuredHeight
-            }
-        })
+        imageHeight = resources.getDimension(R.dimen.back_drop_height_image).toInt()
 
         scroll.viewTreeObserver.addOnScrollChangedListener {
             Log.d("data", "SCROLL Y : " + scroll.scrollY)
@@ -209,6 +232,35 @@ class MovieDetailsActivity : AppCompatActivity() {
                     toolbar.background.alpha = 255
             }
         }
+
+        favorite_button.setOnClickListener {
+            val favoriteData = FavoriteTable(
+                    movieData.id,
+                    movieData.title,
+                    movieData.overview,
+                    movieData.poster_path,
+                    movieData.backdrop_path,
+                    movieData.vote_average,
+                    movieData.release_date,
+                    Status.MOVIE
+            )
+            if(viewModel.isFavoritedMovie(movieData.id)){
+                val unFavoriteDialog = UnfavoriteDialog(this, viewModel, favoriteData)
+                unFavoriteDialog.show()
+                unFavoriteDialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            }
+            else {
+                viewModel.insertFavorite(favoriteData)
+            }
+        }
+
+        val favorite = viewModel.countFavoritedMovieLive(movieData.id)
+        favorite.observe(this, Observer<Int> {
+            favorite_button.setImageResource(if(it > 0)
+                R.drawable.ic_favorite_black_24dp
+            else
+                R.drawable.ic_favorite_border_black_24dp)
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -222,10 +274,6 @@ class MovieDetailsActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

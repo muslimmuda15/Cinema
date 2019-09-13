@@ -74,12 +74,23 @@
                 android:id="@+id/title_movie"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_normal"
+                android:layout_marginStart="@dimen/quarter_margin"
                 android:textSize="@dimen/title_font"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/overview_text"
-                app:layout_constraintStart_toEndOf="@+id/poster_image_layout"
+                app:layout_constraintEnd_toStartOf="@+id/favorite_button"
+                app:layout_constraintStart_toStartOf="@+id/rating_star"
                 app:layout_constraintTop_toTopOf="@+id/poster_image_layout" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/favorite_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="175dp"
+                android:layout_marginEnd="@dimen/double_margin"
+                app:srcCompat="@drawable/ic_favorite_border_black_24dp"
+                app:backgroundTint="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/date_release"
@@ -97,10 +108,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="0dp"
+                android:layout_marginStart="@dimen/margin_normal"
                 android:layout_marginTop="@dimen/margin_normal"
-                app:layout_constraintStart_toStartOf="@+id/date_release"
-                app:layout_constraintTop_toBottomOf="@+id/date_release" />
+                app:layout_constraintTop_toBottomOf="@+id/date_release"
+                app:layout_constraintStart_toEndOf="@+id/poster_image_layout"
+                tools:layout_editor_absoluteX="124dp" />
 
             <androidx.cardview.widget.CardView
                 android:layout_width="wrap_content"
@@ -126,6 +138,7 @@
                 android:id="@+id/votes"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/quarter_margin"
                 android:layout_marginTop="@dimen/margin_normal"
                 app:layout_constraintEnd_toEndOf="@+id/date_release"
                 app:layout_constraintStart_toStartOf="@+id/rating_star"
@@ -135,24 +148,65 @@
                 android:id="@+id/genres_layout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="@dimen/margin_normal"
+                android:orientation="horizontal"
                 app:flexWrap="wrap"
                 app:layout_constraintEnd_toEndOf="@+id/votes"
-                app:layout_constraintStart_toStartOf="@+id/votes"
+                app:layout_constraintStart_toStartOf="@+id/rating_star"
                 app:layout_constraintTop_toBottomOf="@+id/votes">
 
             </com.google.android.flexbox.FlexboxLayout>
 
             <TextView
-                android:id="@+id/overview_text"
+                android:id="@+id/textView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:text="@string/story_line"
+                android:textStyle="bold"
                 android:layout_marginTop="@dimen/double_margin"
                 android:layout_marginEnd="@dimen/margin_normal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/poster_image_layout"
                 app:layout_constraintTop_toBottomOf="@+id/poster_image_layout" />
+
+            <TextView
+                android:id="@+id/overview_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/quarter_margin"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/textView"
+                app:layout_constraintStart_toStartOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+            <LinearLayout
+                android:id="@+id/production_layout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/double_margin"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/overview_text">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/double_margin"
+                    android:text="@string/creator" />
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/production_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_normal"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
@@ -161,6 +215,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
+        android:visibility="gone"
         android:elevation="2dp"
         android:clickable="true"
         android:focusable="true"

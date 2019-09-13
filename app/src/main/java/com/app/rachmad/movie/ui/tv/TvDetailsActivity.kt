@@ -10,11 +10,9 @@ import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.app.rachmad.movie.BuildConfig
 import com.app.rachmad.movie.GlideApp
 import com.app.rachmad.movie.R
@@ -22,20 +20,22 @@ import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.`object`.TvDetailData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
-import com.app.rachmad.movie.viewmodel.ListModel
+import com.app.rachmad.movie.sqlite.table.FavoriteTable
+import com.app.rachmad.movie.ui.BaseActivity
+import com.app.rachmad.movie.ui.helper.UnfavoriteDialog
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import kotlinx.android.synthetic.main.activity_tv_details.*
+import kotlinx.android.synthetic.main.custom_cast.view.*
 import kotlinx.android.synthetic.main.custom_chip.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 const val TV_EXTRA = "TvExtra"
-class TvDetailsActivity : AppCompatActivity() {
+class TvDetailsActivity : BaseActivity() {
     private lateinit var tvData: TvData
-    private lateinit var viewModel: ListModel
     var imageHeight = 0
 
     private val langReceiver by lazy {
@@ -44,8 +44,8 @@ class TvDetailsActivity : AppCompatActivity() {
                 Log.d("language", "LANGUAGE CHANGED TO " + Locale.getDefault().getCountry())
                 val data = intent.getParcelableExtra(TV_EXTRA) as TvData
 
-                viewModel?.refreshTvDetail()
-                viewModel?.tvDetail(data.id, LanguageProvide.getLanguage(c))
+                viewModel.refreshTvDetail()
+                viewModel.tvDetail(data.id, LanguageProvide.getLanguage(c))
             }
         }
     }
@@ -75,6 +75,7 @@ class TvDetailsActivity : AppCompatActivity() {
                         .centerCrop()
                         .listener(object: RequestListener<Drawable> {
                             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                poster_image_layout.stopShimmer()
                                 return false
                             }
 
@@ -106,7 +107,36 @@ class TvDetailsActivity : AppCompatActivity() {
                     val genreCard = layoutInflater.inflate(R.layout.custom_chip, null) as FrameLayout
                     genreCard.genre_text.text = genre_id.name
                     genres_layout.addView(genreCard)
+                }
 
+                if(created_by.size > 0) {
+                    cast_layout.visibility = ViewGroup.VISIBLE
+
+                    created_by.forEach {
+                        val creators = layoutInflater.inflate(R.layout.custom_cast, null) as FrameLayout
+                        GlideApp.with(creators.image_cast)
+                                .load(BuildConfig.IMAGE_URL + it.profile_path)
+                                .centerCrop()
+                                .listener(object : RequestListener<Drawable> {
+                                    override fun onLoadFailed(e: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                        creators.image_shimmer.stopShimmer()
+                                        return false
+                                    }
+
+                                    override fun onResourceReady(resource: Drawable?, model: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                        creators.image_shimmer.stopShimmer()
+                                        creators.image_shimmer.setShimmer(null)
+                                        return false
+                                    }
+                                })
+                                .into(creators.image_cast)
+
+                        creators.name_cast.text = it.name
+                        cast_list.addView(creators)
+                    }
+                }
+                else{
+                    cast_layout.visibility = ViewGroup.GONE
                 }
             }
         }
@@ -116,7 +146,6 @@ class TvDetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tv_details)
 
-        viewModel = ViewModelProviders.of(this).get(ListModel::class.java)
         setupLanguage()
 
         tvData = intent.getParcelableExtra(TV_EXTRA) as TvData
@@ -180,12 +209,7 @@ class TvDetailsActivity : AppCompatActivity() {
     }
 
     private fun setupListener(){
-        image.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener{
-            override fun onGlobalLayout() {
-                image.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                imageHeight = image.measuredHeight
-            }
-        })
+        imageHeight = resources.getDimension(R.dimen.back_drop_height_image).toInt()
 
         scroll.viewTreeObserver.addOnScrollChangedListener {
             Log.d("data", "SCROLL Y : " + scroll.scrollY)
@@ -203,6 +227,35 @@ class TvDetailsActivity : AppCompatActivity() {
                     toolbar.background.alpha = 255
             }
         }
+
+        favorite_button.setOnClickListener {
+            val favoriteData = FavoriteTable(
+                    tvData.id,
+                    tvData.name,
+                    tvData.overview,
+                    tvData.poster_path,
+                    tvData.backdrop_path,
+                    tvData.vote_average,
+                    tvData.first_air_date,
+                    Status.TV
+            )
+            if(viewModel.isFavoritedTv(tvData.id)){
+                val unFavoriteDialog = UnfavoriteDialog(this, viewModel, favoriteData)
+                unFavoriteDialog.show()
+                unFavoriteDialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            }
+            else {
+                viewModel.insertFavorite(favoriteData)
+            }
+        }
+
+        val favorite = viewModel.countFavoritedTvLive(tvData.id)
+        favorite.observe(this, Observer<Int> {
+            favorite_button.setImageResource(if(it > 0)
+                R.drawable.ic_favorite_black_24dp
+            else
+                R.drawable.ic_favorite_border_black_24dp)
+        })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

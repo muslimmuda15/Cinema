@@ -2,7 +2,8 @@
 <resources>
     <dimen name="double_margin">16dp</dimen>
     <dimen name="margin_normal">8dp</dimen>
-    <dimen name="margin_strange">8dp</dimen>
+    <dimen name="margin_strange">6dp</dimen>
+    <dimen name="double_margin_strange">12dp</dimen>
     <dimen name="half_margin">4dp</dimen>
     <dimen name="quarter_margin">2dp</dimen>
     <dimen name="no_margin">0dp</dimen>

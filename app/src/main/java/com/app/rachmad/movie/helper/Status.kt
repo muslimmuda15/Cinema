@@ -7,4 +7,7 @@ object Status{
     const val EMPTY_DATA = 1
     const val LOADING = 0
     const val UNKNOWN = -1
+
+    const val MOVIE = 100
+    const val TV = 101
 }

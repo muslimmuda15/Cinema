@@ -1,6 +1,7 @@
 package com.app.rachmad.movie.webservice
 
 import com.app.rachmad.movie.BuildConfig
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,6 +15,7 @@ object MovieSite {
 
         val client = OkHttpClient.Builder()
                 .addInterceptor(interceptor)
+                .addNetworkInterceptor(StethoInterceptor())
                 .connectTimeout(60, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)

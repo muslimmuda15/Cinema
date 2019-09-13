@@ -91,7 +91,7 @@ class TvItemFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_tv_item_list, container, false)
-        viewModel = (activity as MainActivity).viewModel!!
+        viewModel = (activity as MainActivity).viewModel
         return view
     }
 

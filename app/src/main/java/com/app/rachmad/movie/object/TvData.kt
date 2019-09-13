@@ -24,14 +24,14 @@ data class TvData(
             parcel.readInt(),
             parcel.readString(),
             parcel.readFloat(),
-            parcel.readString(),
-            parcel.readString(),
-            parcel.createStringArrayList(),
-            parcel.createIntArray(),
-            parcel.readString(),
+            parcel.readString()!!,
+            parcel.readString()!!,
+            parcel.createStringArrayList()!!,
+            parcel.createIntArray()!!,
+            parcel.readString()!!,
             parcel.readInt(),
-            parcel.readString(),
-            parcel.readString()) {
+            parcel.readString()!!,
+            parcel.readString()!!) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
