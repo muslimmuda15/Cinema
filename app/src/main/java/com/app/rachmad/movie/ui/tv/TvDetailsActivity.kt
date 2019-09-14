@@ -20,8 +20,8 @@ import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.`object`.TvDetailData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
-import com.app.rachmad.movie.sqlite.table.FavoriteTable
 import com.app.rachmad.movie.ui.BaseActivity
+import com.app.rachmad.movie.ui.FavoriteActivity
 import com.app.rachmad.movie.ui.helper.UnfavoriteDialog
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -37,18 +37,6 @@ const val TV_EXTRA = "TvExtra"
 class TvDetailsActivity : BaseActivity() {
     private lateinit var tvData: TvData
     var imageHeight = 0
-
-    private val langReceiver by lazy {
-        object: BroadcastReceiver(){
-            override fun onReceive(c: Context, i: Intent) {
-                Log.d("language", "LANGUAGE CHANGED TO " + Locale.getDefault().getCountry())
-                val data = intent.getParcelableExtra(TV_EXTRA) as TvData
-
-                viewModel.refreshTvDetail()
-                viewModel.tvDetail(data.id, LanguageProvide.getLanguage(c))
-            }
-        }
-    }
 
     private fun loadData(tvDetailData: TvDetailData?){
         tvDetailData?.let {
@@ -229,23 +217,13 @@ class TvDetailsActivity : BaseActivity() {
         }
 
         favorite_button.setOnClickListener {
-            val favoriteData = FavoriteTable(
-                    tvData.id,
-                    tvData.name,
-                    tvData.overview,
-                    tvData.poster_path,
-                    tvData.backdrop_path,
-                    tvData.vote_average,
-                    tvData.first_air_date,
-                    Status.TV
-            )
             if(viewModel.isFavoritedTv(tvData.id)){
-                val unFavoriteDialog = UnfavoriteDialog(this, viewModel, favoriteData)
+                val unFavoriteDialog = UnfavoriteDialog(this, viewModel, tvData)
                 unFavoriteDialog.show()
                 unFavoriteDialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             }
             else {
-                viewModel.insertFavorite(favoriteData)
+                viewModel.insertTvFavorite(tvData)
             }
         }
 
@@ -265,6 +243,10 @@ class TvDetailsActivity : BaseActivity() {
             }
             R.id.change_language -> {
                 val intent = Intent(Settings.ACTION_LOCALE_SETTINGS)
+                startActivity(intent)
+            }
+            R.id.favorite_list -> {
+                val intent = Intent(this, FavoriteActivity::class.java)
                 startActivity(intent)
             }
         }

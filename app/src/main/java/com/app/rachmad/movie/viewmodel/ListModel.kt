@@ -2,18 +2,32 @@ package com.app.rachmad.movie.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.paging.DataSource
+import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.app.rachmad.movie.App
 import com.app.rachmad.movie.`object`.*
 import com.app.rachmad.movie.repository.MovieRepository
 import com.app.rachmad.movie.repository.TvRepository
 import com.app.rachmad.movie.sqlite.model.FavoriteModel
-import com.app.rachmad.movie.sqlite.table.FavoriteTable
 
 class ListModel: ViewModel(){
     val movieRepository: MovieRepository = MovieRepository()
     val tvRepository: TvRepository = TvRepository()
     val favoriteModel: FavoriteModel = FavoriteModel(App.context)
+
+    val movieFavoriteLiveData: LiveData<PagedList<MovieData>>
+    val tvFavoriteLiveData: LiveData<PagedList<TvData>>
+
+    init {
+        val movieFactory: DataSource.Factory<Int, MovieData>? = favoriteModel.getFavoriteMovieList()
+        val moviePagedBuilder: LivePagedListBuilder<Int, MovieData> = LivePagedListBuilder(movieFactory!!, 20)
+        movieFavoriteLiveData = moviePagedBuilder.build()
+
+        val tvFactory: DataSource.Factory<Int, TvData>? = favoriteModel.getFavoriteTvList()
+        val tvPagedBuilder: LivePagedListBuilder<Int, TvData> = LivePagedListBuilder(tvFactory!!, 20)
+        tvFavoriteLiveData = tvPagedBuilder.build()
+    }
 
     fun movie(language: String) = movieRepository.movie(language)
     fun connectionMovie(): LiveData<Int> = movieRepository.connectionMovieList
@@ -43,12 +57,14 @@ class ListModel: ViewModel(){
     fun errorTvDetail(): ErrorData? = tvRepository.errorTvDetails
     fun getTvDetail(): TvDetailData? = tvRepository.tvDetailsData
 
-    fun insertFavorite(favoriteTable: FavoriteTable) = favoriteModel.insertFavorite(favoriteTable)
-    fun getFavoriteMovieList(): List<FavoriteTable> = favoriteModel.getFavoriteMovieList()
-    fun getFavoriteTvList(): List<FavoriteTable> = favoriteModel.getFavoriteTvList()
+    fun insertMovieFavorite(movieData: MovieData) = favoriteModel.insertMovieFavorite(movieData)
+    fun insertTvFavorite(tvData: TvData) = favoriteModel.insertTvFavorite(tvData)
+    fun countAllFavoriteMovie(): Int = favoriteModel.countAllFavoriteMovie()
+    fun countAllFavoriteTv(): Int = favoriteModel.countAllFavoriteTv()
     fun countFavoritedMovieLive(id: Int): LiveData<Int> = favoriteModel.countFavoritedMovieLive(id)
     fun countFavoritedTvLive(id: Int): LiveData<Int> = favoriteModel.countFavoritedTvLive(id)
-    fun deleteFavorite(favoriteTable: FavoriteTable) = favoriteModel.deleteFavorite(favoriteTable)
+    fun deleteMovieFavorite(movieData: MovieData) = favoriteModel.deleteMovieFavorite(movieData)
+    fun deleteTvFavorite(tvData: TvData) = favoriteModel.deleteTvFavorite(tvData)
     fun isFavoritedMovie(id: Int): Boolean = favoriteModel.isFavoritedMovie(id)
     fun isFavoritedTv(id: Int): Boolean = favoriteModel.isFavoritedTv(id)
 }

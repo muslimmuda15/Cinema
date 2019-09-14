@@ -20,10 +20,9 @@ import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.MovieDetailData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
-import com.app.rachmad.movie.sqlite.table.FavoriteTable
 import com.app.rachmad.movie.ui.BaseActivity
+import com.app.rachmad.movie.ui.FavoriteActivity
 import com.app.rachmad.movie.ui.helper.UnfavoriteDialog
-import com.app.rachmad.movie.ui.tv.TV_EXTRA
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -40,19 +39,6 @@ const val MOVIE_EXTRA = "MovieExtra"
 class MovieDetailsActivity : BaseActivity() {
     lateinit var movieData: MovieData
     var imageHeight = 0
-
-    private val langReceiver by lazy {
-        object: BroadcastReceiver(){
-            override fun onReceive(c: Context, i: Intent) {
-                Log.d("language", "LANGUAGE CHANGED TO " + Locale.getDefault().getCountry())
-                val data = intent.getParcelableExtra(TV_EXTRA) as MovieData
-
-                viewModel.refreshMovieDetail()
-                viewModel.movieDetail(data.id, LanguageProvide.getLanguage(c))
-            }
-        }
-    }
-
 
     private fun loadData(movieDetailData: MovieDetailData?){
         movieDetailData?.let {
@@ -234,23 +220,13 @@ class MovieDetailsActivity : BaseActivity() {
         }
 
         favorite_button.setOnClickListener {
-            val favoriteData = FavoriteTable(
-                    movieData.id,
-                    movieData.title,
-                    movieData.overview,
-                    movieData.poster_path,
-                    movieData.backdrop_path,
-                    movieData.vote_average,
-                    movieData.release_date,
-                    Status.MOVIE
-            )
             if(viewModel.isFavoritedMovie(movieData.id)){
-                val unFavoriteDialog = UnfavoriteDialog(this, viewModel, favoriteData)
+                val unFavoriteDialog = UnfavoriteDialog(this, viewModel, movieData)
                 unFavoriteDialog.show()
                 unFavoriteDialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             }
             else {
-                viewModel.insertFavorite(favoriteData)
+                viewModel.insertMovieFavorite(movieData)
             }
         }
 
@@ -270,6 +246,10 @@ class MovieDetailsActivity : BaseActivity() {
             }
             R.id.change_language -> {
                 val intent = Intent(Settings.ACTION_LOCALE_SETTINGS)
+                startActivity(intent)
+            }
+            R.id.favorite_list -> {
+                val intent = Intent(this, FavoriteActivity::class.java)
                 startActivity(intent)
             }
         }

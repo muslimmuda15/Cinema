@@ -21,6 +21,8 @@
     <string name="creator">Pembuat</string>
     <string name="production">Perusahaan Produksi</string>
 
+    <string name="favorite_empty">Anda tidak punya favorit pada %1$s</string>
+    <string name="favorite_title">Daftar Favorite</string>
     <string name="unfavorite_title">Hapus favorite?</string>
     <string name="unfavorite_description">Anda yakin ingin menghilangkan favorite?</string>
     <string name="yes">Ya</string>

@@ -6,6 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Observer
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.app.rachmad.movie.BuildConfig
@@ -13,6 +17,7 @@ import com.app.rachmad.movie.GlideApp
 import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.movie.TvItemFragment
+import com.app.rachmad.movie.viewmodel.ListModel
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -23,6 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class TvItemRecyclerViewAdapter(
+        private val viewModel: ListModel,
         private val mListener: TvItemFragment.OnTvClickListener?)
     : PagedListAdapter<TvData, TvItemRecyclerViewAdapter.ViewHolder>(checkDifferent) {
 
@@ -62,7 +68,7 @@ class TvItemRecyclerViewAdapter(
 
             with(holder) {
                 title.text = item.name
-                overview.text = if(item.overview.isNullOrBlank())
+                overview.text = if(item.overview.isBlank())
                     HtmlCompat.fromHtml("<i>${itemView.context.getString(R.string.no_preview)}</i>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 else
                     item.overview
@@ -83,7 +89,30 @@ class TvItemRecyclerViewAdapter(
         }
     }
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.onAppear()
+    }
+
+    override fun onViewDetachedFromWindow(holder: ViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onDisappear()
+    }
+
+    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView), LifecycleOwner {
+        private val lifeCycleRegistry = LifecycleRegistry(this)
+        init {
+            lifeCycleRegistry.currentState = Lifecycle.State.INITIALIZED
+        }
+        fun onAppear(){
+            lifeCycleRegistry.currentState = Lifecycle.State.CREATED
+        }
+        fun onDisappear(){
+            lifeCycleRegistry.currentState = Lifecycle.State.DESTROYED
+        }
+        override fun getLifecycle(): Lifecycle {
+            return lifeCycleRegistry
+        }
         val image = mView.image
         val title = mView.title
         val overview = mView.overview

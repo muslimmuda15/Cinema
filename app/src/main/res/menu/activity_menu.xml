@@ -5,6 +5,12 @@
     tools:context="com.app.rachmad.movie.ui.MainActivity">
 
     <item
+        android:id="@+id/favorite_list"
+        android:icon="@drawable/ic_favorite_white_24dp"
+        android:title="@string/language"
+        app:showAsAction="always" />
+
+    <item
         android:title="@string/more"
         android:icon="@drawable/ic_more_vert_black_24dp"
         android:orderInCategory="100"

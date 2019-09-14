@@ -1,37 +1,51 @@
 package com.app.rachmad.movie.sqlite.query
 
 import androidx.lifecycle.LiveData
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import com.app.rachmad.movie.`object`.MovieData
+import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.helper.Status
-import com.app.rachmad.movie.sqlite.table.FavoriteTable
 
 @Dao
 interface FavoriteQuery {
-    @Query("select * from favorite where type = ${Status.MOVIE}")
-    fun getFavoriteMovieList(): List<FavoriteTable>
+    @Query("select * from movie")
+    fun getFavoriteMovieList(): DataSource.Factory<Int, MovieData>
 
-    @Query("select * from favorite where type = ${Status.TV}")
-    fun getFavoriteTvList(): List<FavoriteTable>
+    @Query("select * from tv")
+    fun getFavoriteTvList(): DataSource.Factory<Int, TvData>
 
     @Insert(onConflict = REPLACE)
-    fun insertFavorite(favoriteTable: FavoriteTable)
+    fun insertMovieFavorite(movieData: MovieData)
 
-    @Query("select count(*) from favorite where id = :id and type = '${Status.MOVIE}'")
+    @Insert(onConflict = REPLACE)
+    fun insertTvFavorite(tvData: TvData)
+
+    @Query("select count(*) from movie")
+    fun countAllFavoriteMovie(): Int
+
+    @Query("select count(*) from tv")
+    fun countAllFavoriteTv(): Int
+
+    @Query("select count(*) from movie where id = :id")
     fun countFavoriteMovieLive(id: Int): LiveData<Int>
 
-    @Query("select count(*) from favorite where id = :id and type = '${Status.TV}'")
+    @Query("select count(*) from tv where id = :id")
     fun countFavoriteTvLive(id: Int): LiveData<Int>
 
     @Delete
-    fun deleteFavorite(favoriteTable: FavoriteTable)
+    fun deleteMovieFavorite(movieData: MovieData)
 
-    @Query("select count(*) from favorite where id = :id and type = '${Status.MOVIE}'")
+    @Delete
+    fun deleteTvFavorite(tvData: TvData)
+
+    @Query("select count(*) from movie where id = :id")
     fun countFavoriteMovie(id: Int): Int
 
-    @Query("select count(*) from favorite where id = :id and type = '${Status.TV}'")
+    @Query("select count(*) from tv where id = :id")
     fun countFavoriteTv(id: Int): Int
 }

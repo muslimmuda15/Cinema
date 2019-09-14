@@ -10,11 +10,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import com.app.rachmad.movie.ui.MainActivity
 import com.app.rachmad.movie.R
+import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
+import com.app.rachmad.movie.ui.BaseActivity
+import com.app.rachmad.movie.ui.IS_FAVORITE_EXTRA
 import com.app.rachmad.movie.ui.tv.TvItemRecyclerViewAdapter
 import com.app.rachmad.movie.viewmodel.ListModel
 import kotlinx.android.synthetic.main.fragment_tv_item_list.*
@@ -23,24 +27,47 @@ class TvItemFragment : Fragment() {
     private var listener: OnTvClickListener? = null
     lateinit var adapter: TvItemRecyclerViewAdapter
     lateinit var viewModel: ListModel
-
-    override fun onResume() {
-        super.onResume()
-
-//        accessData()
-    }
+    var isFavorite = false
 
     private fun accessData(){
-        val connection = viewModel.connectionTv()
-        viewModel.tv(LanguageProvide.getLanguage(this.context))
+        if(isFavorite){
+            if(viewModel.countAllFavoriteTv() > 0) {
+                loading_layout.visibility = ViewGroup.GONE
+                tv_loading.visibility = View.GONE
+                tv_error.visibility = View.GONE
+                list.visibility = ViewGroup.VISIBLE
+                tv_refresh.isRefreshing = false
+                loading_more.visibility = View.GONE
 
-        if (list is RecyclerView) {
-            connection.observe(this, Observer<Int> {
-                if(statusConnection(it)) {
-                    adapter.submitList(viewModel.getTvList())
+                val tvFavorite = viewModel.tvFavoriteLiveData
+                tvFavorite.observe(this, Observer<PagedList<TvData>> {
+                    adapter.submitList(it)
                     adapter.notifyDataSetChanged()
-                }
-            })
+                })
+            }
+            else{
+                loading_layout.visibility = ViewGroup.VISIBLE
+                tv_loading.visibility = View.GONE
+                tv_error.visibility = View.VISIBLE
+                list.visibility = ViewGroup.GONE
+                tv_refresh.isRefreshing = false
+                loading_more.visibility = View.GONE
+
+                tv_error.text = getString(R.string.favorite_empty, getString(R.string.tv))
+            }
+        }
+        else {
+            val connection = viewModel.connectionTv()
+            viewModel.tv(LanguageProvide.getLanguage(this.context))
+
+            if (list is RecyclerView) {
+                connection.observe(this, Observer<Int> {
+                    if (statusConnection(it)) {
+                        adapter.submitList(viewModel.getTvList())
+                        adapter.notifyDataSetChanged()
+                    }
+                })
+            }
         }
     }
 
@@ -88,37 +115,47 @@ class TvItemFragment : Fragment() {
         tv_error.text = error?.status_message ?: run { getString(R.string.unknown_error) }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        isFavorite = arguments?.getBoolean(IS_FAVORITE_EXTRA, false) ?: false
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_tv_item_list, container, false)
-        viewModel = (activity as MainActivity).viewModel
+        viewModel = (activity as BaseActivity).viewModel
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        adapter = TvItemRecyclerViewAdapter(listener)
+        adapter = TvItemRecyclerViewAdapter(viewModel, listener)
         list.layoutManager = LinearLayoutManager(context)
         list.adapter = adapter
 
         accessData()
 
         tv_refresh.setOnRefreshListener {
-            viewModel.refreshTv()
+            if(!isFavorite) {
+                viewModel.refreshTv()
+                tv_refresh.isRefreshing = true
+            }
             accessData()
-            tv_refresh.isRefreshing = true
         }
 
-        viewModel.doLoadingTv().observe(this, Observer<Boolean> {
-            val animator = AnimatorInflater.loadAnimator(this.context, if(it)
-                R.animator.fade_in
-            else
-                R.animator.fade_out)
-            animator.setTarget(loading_more)
-            animator.setDuration(500)
-            animator.start()
-        })
+        if(!isFavorite) {
+            viewModel.doLoadingTv().observe(this, Observer<Boolean> {
+                val animator = AnimatorInflater.loadAnimator(this.context, if (it)
+                    R.animator.fade_in
+                else
+                    R.animator.fade_out)
+                animator.setTarget(loading_more)
+                animator.setDuration(500)
+                animator.start()
+            })
+        }
     }
 
     override fun onAttach(context: Context) {

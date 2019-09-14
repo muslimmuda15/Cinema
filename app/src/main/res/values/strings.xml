@@ -23,6 +23,8 @@
     <string name="creator">Creator</string>
     <string name="production">Procuction Companies</string>
 
+    <string name="favorite_empty">You have no favorite on %1$s</string>
+    <string name="favorite_title">Favorite List</string>
     <string name="unfavorite_title">Unfavorite</string>
     <string name="unfavorite_description">Are you sure to unfavorite?</string>
     <string name="yes">Yes</string>

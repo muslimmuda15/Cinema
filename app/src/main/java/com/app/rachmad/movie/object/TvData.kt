@@ -2,32 +2,33 @@ package com.app.rachmad.movie.`object`
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "tv")
 data class TvData(
-        val poster_path: String?,
-        val popularity: Float,
-        val id: Int,
-        val backdrop_path: String?,
-        val vote_average: Float,
-        val overview: String,
-        val first_air_date: String,
-        val origin_country: List<String>,
-        val genre_ids: IntArray,
-        val original_language: String,
-        val vote_count: Int,
-        val name: String,
-        val original_name: String
+        @PrimaryKey
+        @ColumnInfo(name = "id") val id: Int,
+        @ColumnInfo(name = "poster_path") val poster_path: String?,
+        @ColumnInfo(name = "popularity") val popularity: Float,
+        @ColumnInfo(name = "backdrop_path") val backdrop_path: String?,
+        @ColumnInfo(name = "vote_average") val vote_average: Float,
+        @ColumnInfo(name = "overview") val overview: String,
+        @ColumnInfo(name = "first_air_date") val first_air_date: String,
+        @ColumnInfo(name = "original_language") val original_language: String,
+        @ColumnInfo(name = "vote_count") val vote_count: Int,
+        @ColumnInfo(name = "name") val name: String,
+        @ColumnInfo(name = "original_name") val original_name: String
 ): Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
-            parcel.readFloat(),
             parcel.readInt(),
             parcel.readString(),
             parcel.readFloat(),
+            parcel.readString(),
+            parcel.readFloat(),
             parcel.readString()!!,
             parcel.readString()!!,
-            parcel.createStringArrayList()!!,
-            parcel.createIntArray()!!,
             parcel.readString()!!,
             parcel.readInt(),
             parcel.readString()!!,
@@ -35,15 +36,13 @@ data class TvData(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
         parcel.writeString(poster_path)
         parcel.writeFloat(popularity)
-        parcel.writeInt(id)
         parcel.writeString(backdrop_path)
         parcel.writeFloat(vote_average)
         parcel.writeString(overview)
         parcel.writeString(first_air_date)
-        parcel.writeStringList(origin_country)
-        parcel.writeIntArray(genre_ids)
         parcel.writeString(original_language)
         parcel.writeInt(vote_count)
         parcel.writeString(name)

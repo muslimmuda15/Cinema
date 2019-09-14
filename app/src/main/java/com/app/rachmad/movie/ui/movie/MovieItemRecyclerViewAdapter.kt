@@ -9,6 +9,7 @@ import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import androidx.lifecycle.Observer
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.app.rachmad.movie.BuildConfig
@@ -76,7 +77,7 @@ class MovieItemRecyclerViewAdapter(
 
             with(holder) {
                 title.text = item.title
-                overview.text = if(item.overview.isNullOrBlank())
+                overview.text = if(item.overview.isBlank())
                     HtmlCompat.fromHtml("<i>${itemView.context.getString(R.string.no_preview)}</i>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 else
                     item.overview

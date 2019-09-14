@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -15,16 +14,16 @@ import androidx.viewpager.widget.ViewPager
 import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.TvData
+import com.app.rachmad.movie.movie.TvItemFragment
 import com.app.rachmad.movie.ui.movie.MOVIE_EXTRA
 import com.app.rachmad.movie.ui.movie.MovieDetailsActivity
+import com.app.rachmad.movie.ui.movie.MovieItemFragment
 import com.app.rachmad.movie.ui.tv.TV_EXTRA
 import com.app.rachmad.movie.ui.tv.TvDetailsActivity
-import com.app.rachmad.movie.ui.movie.MovieItemFragment
-import com.app.rachmad.movie.movie.TvItemFragment
-import kotlinx.android.synthetic.main.activity_main.*
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.android.synthetic.main.activity_favorite.*
 
-const val IS_FAVORITE_EXTRA = "IsFavorite"
-class MainActivity : BaseActivity(), MovieItemFragment.OnMovieClickListener, TvItemFragment.OnTvClickListener {
+class FavoriteActivity : BaseActivity(), MovieItemFragment.OnMovieClickListener, TvItemFragment.OnTvClickListener {
     override fun onClickMovie(item: MovieData) {
         val intent = Intent(this, MovieDetailsActivity::class.java)
         intent.putExtra(MOVIE_EXTRA, item)
@@ -69,12 +68,17 @@ class MainActivity : BaseActivity(), MovieItemFragment.OnMovieClickListener, TvI
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_favorite)
 
         setupLanguage()
 
         setSupportActionBar(toolbar)
         toolbar.setBackgroundColor(ContextCompat.getColor(toolbar.context, R.color.colorPrimary))
+
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_24dp)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
 
         bottom_navigation.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
 
@@ -87,17 +91,18 @@ class MainActivity : BaseActivity(), MovieItemFragment.OnMovieClickListener, TvI
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.activity_menu, menu)
+
+        menu.findItem(R.id.favorite_list).isVisible = false
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
+            android.R.id.home -> {
+                finish()
+            }
             R.id.change_language -> {
                 val intent = Intent(Settings.ACTION_LOCALE_SETTINGS)
-                startActivity(intent)
-            }
-            R.id.favorite_list -> {
-                val intent = Intent(this, FavoriteActivity::class.java)
                 startActivity(intent)
             }
         }
@@ -114,10 +119,18 @@ class MainActivity : BaseActivity(), MovieItemFragment.OnMovieClickListener, TvI
         override fun getItem(position: Int): Fragment {
             when(position){
                 0 -> {
-                    return MovieItemFragment()
+                    val movieFragment = MovieItemFragment()
+                    val bundle = Bundle()
+                    bundle.putBoolean(IS_FAVORITE_EXTRA, true)
+                    movieFragment.arguments = bundle
+                    return movieFragment
                 }
                 1 -> {
-                    return TvItemFragment()
+                    val tvFragment = TvItemFragment()
+                    val bundle = Bundle()
+                    bundle.putBoolean(IS_FAVORITE_EXTRA, true)
+                    tvFragment.arguments = bundle
+                    return tvFragment
                 }
                 else -> {
                     return Fragment()
