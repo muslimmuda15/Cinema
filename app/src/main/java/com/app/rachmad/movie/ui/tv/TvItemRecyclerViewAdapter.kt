@@ -73,7 +73,7 @@ class TvItemRecyclerViewAdapter(
                 else
                     item.overview
 
-                var df = SimpleDateFormat("yyyy-mm-dd", Locale.US)
+                var df = SimpleDateFormat("yyyy-MM-dd", Locale.US)
                 val newDate = df.parse(item.first_air_date)
                 df = SimpleDateFormat("MMM yyyy", Locale.US)
                 date.text = df.format(newDate)

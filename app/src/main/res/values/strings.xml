@@ -29,4 +29,5 @@
     <string name="unfavorite_description">Are you sure to unfavorite?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="search">Search</string>
 </resources>

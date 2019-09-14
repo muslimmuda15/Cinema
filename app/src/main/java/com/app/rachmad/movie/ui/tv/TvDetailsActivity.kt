@@ -76,12 +76,12 @@ class TvDetailsActivity : BaseActivity() {
                         .into(poster_image)
 
                 title_tv.text = name
-                overview_text.text = if(overview.isNullOrBlank())
+                overview_text.text = if(overview.isBlank())
                     HtmlCompat.fromHtml("<i>${getString(R.string.no_preview)}</i>", HtmlCompat.FROM_HTML_MODE_LEGACY)
                 else
                     overview
 
-                var df = SimpleDateFormat("yyyy-mm-dd", Locale.US)
+                var df = SimpleDateFormat("yyyy-MM-dd", Locale.US)
                 val newDate = df.parse(first_air_date)
                 df = SimpleDateFormat("MMM yyyy", Locale.US)
                 date_release.text = df.format(newDate)
@@ -106,12 +106,12 @@ class TvDetailsActivity : BaseActivity() {
                                 .load(BuildConfig.IMAGE_URL + it.profile_path)
                                 .centerCrop()
                                 .listener(object : RequestListener<Drawable> {
-                                    override fun onLoadFailed(e: GlideException?, model: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, isFirstResource: Boolean): Boolean {
+                                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                                         creators.image_shimmer.stopShimmer()
                                         return false
                                     }
 
-                                    override fun onResourceReady(resource: Drawable?, model: Any?, target: com.bumptech.glide.request.target.Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+                                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
                                         creators.image_shimmer.stopShimmer()
                                         creators.image_shimmer.setShimmer(null)
                                         return false

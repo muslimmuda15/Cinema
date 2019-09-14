@@ -1,6 +1,7 @@
 package com.app.rachmad.movie.ui.movie
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -82,8 +83,9 @@ class MovieItemRecyclerViewAdapter(
                 else
                     item.overview
 
-                var df = SimpleDateFormat("yyyy-mm-dd", Locale.US)
+                var df = SimpleDateFormat("yyyy-MM-dd", Locale.US)
                 val newDate = df.parse(item.release_date)
+                Log.d("date", item.release_date + " -> " + newDate.toString())
                 df = SimpleDateFormat("MMM yyyy", Locale.US)
                 date.text = df.format(newDate)
 

@@ -83,7 +83,7 @@ class MovieDetailsActivity : BaseActivity() {
                 else
                     overview
 
-                var df = SimpleDateFormat("yyyy-mm-dd", Locale.US)
+                var df = SimpleDateFormat("yyyy-MM-dd", Locale.US)
                 val newDate = df.parse(release_date)
                 df = SimpleDateFormat("MMM yyyy", Locale.US)
                 date_release.text = df.format(newDate)
