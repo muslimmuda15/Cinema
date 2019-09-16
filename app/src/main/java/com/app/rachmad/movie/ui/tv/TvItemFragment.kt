@@ -4,10 +4,13 @@ import android.animation.AnimatorInflater
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
@@ -71,6 +74,72 @@ class TvItemFragment : BaseFragment() {
         }
     }
 
+    private fun onSearch(){
+        if(isFavorite){
+            search_layout.visibility = ViewGroup.GONE
+        }
+        else {
+            search_layout.visibility = ViewGroup.VISIBLE
+            val connectionSearch = viewModel.connectionTvSearch()
+            connectionSearch.observe(this, Observer<Int> {
+                if(statusConnection(it)){
+                    adapter.submitList(viewModel.getTvSearch())
+                    adapter.notifyDataSetChanged()
+                }
+            })
+
+            search_text.addTextChangedListener(object: TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    if(s.toString() == "") {
+                        loading_layout.visibility = ViewGroup.GONE
+                        tv_loading.visibility = View.GONE
+                        tv_error.visibility = View.GONE
+                        list.visibility = ViewGroup.VISIBLE
+                        tv_refresh.isRefreshing = false
+
+                        adapter.submitList(viewModel.getTvList())
+                        adapter.notifyDataSetChanged()
+                    }
+                }
+
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+
+            })
+
+            search_text.setOnTouchListener { view, motionEvent ->
+                val DRAWABLE_LEFT = 0
+                val DRAWABLE_TOP = 1
+                val DRAWABLE_RIGHT = 2
+                val DRAWABLE_BOTTOM = 3
+                if (motionEvent.action == MotionEvent.ACTION_UP) {
+                    if (motionEvent.rawX >= (search_text.right - search_text.compoundDrawables[DRAWABLE_RIGHT].bounds.width() - resources.getDimension(R.dimen.double_margin))) {
+                        // TODO: Close Button
+                        search_text.setText("")
+
+                        loading_layout.visibility = ViewGroup.GONE
+                        tv_loading.visibility = View.GONE
+                        tv_error.visibility = View.GONE
+                        list.visibility = ViewGroup.VISIBLE
+                        tv_refresh.isRefreshing = false
+
+                        adapter.submitList(viewModel.getTvList())
+                        adapter.notifyDataSetChanged()
+                        true
+                    }
+                    if (motionEvent.rawX <= (search_text.compoundDrawables[DRAWABLE_LEFT].bounds.width() + resources.getDimension(R.dimen.double_margin))) {
+                        // TODO: Search Button
+                        viewModel.refreshTvSearch()
+                        viewModel.tvSearch(search_text.text.toString(), LanguageProvide.getLanguage(context))
+                        true
+                    }
+                }
+                false
+            }
+        }
+    }
+
     private fun statusConnection(status: Int?): Boolean{
         status?.let {
             when(it){
@@ -111,8 +180,15 @@ class TvItemFragment : BaseFragment() {
     }
 
     private fun sendError(){
-        val error = viewModel.errorTv()
-        tv_error.text = error?.status_message ?: run { getString(R.string.unknown_error) }
+        val error = if(search_text.text.toString().isBlank())
+            viewModel.errorTv()
+        else
+            viewModel.errorTvSearch()
+
+        if(error?.status_code == Status.EMPTY_DATA)
+            tv_error.text = getString(R.string.empty_data)
+        else
+            tv_error.text = error?.status_message ?: run { "" }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -138,10 +214,19 @@ class TvItemFragment : BaseFragment() {
 
         tv_refresh.setOnRefreshListener {
             if(!isFavorite) {
-                viewModel.refreshTv()
                 tv_refresh.isRefreshing = true
+                if(search_text.text.toString().isBlank()) {
+                    viewModel.refreshTv()
+                    accessData()
+                }
+                else{
+                    viewModel.refreshTvSearch()
+                    viewModel.tvSearch(search_text.text.toString(), LanguageProvide.getLanguage(context))
+                }
             }
-            accessData()
+            else {
+                accessData()
+            }
         }
 
         if(!isFavorite) {
@@ -156,9 +241,17 @@ class TvItemFragment : BaseFragment() {
             })
         }
 
-        search_text.setOnClickListener {
-            startActivity(Intent(this.context, TvSearchActivity::class.java))
-        }
+        viewModel.doLoadingTvSearch().observe(this, Observer<Boolean> {
+            val animator = AnimatorInflater.loadAnimator(this.context, if (it)
+                R.animator.fade_in
+            else
+                R.animator.fade_out)
+            animator.setTarget(loading_more)
+            animator.setDuration(500)
+            animator.start()
+        })
+
+        onSearch()
     }
 
     override fun onAttach(context: Context) {

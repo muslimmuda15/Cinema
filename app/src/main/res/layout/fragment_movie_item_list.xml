@@ -6,27 +6,30 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/search_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
+        android:gravity="center"
         android:padding="@dimen/double_margin"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <EditText
             android:id="@+id/search_text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:hint="@string/search"
             android:background="@drawable/border_search_fill_white"
             android:drawableStart="@drawable/ic_search_black_24dp"
+            android:drawableEnd="@drawable/ic_close_black_24dp"
             android:drawableTint="@color/gray"
             android:drawablePadding="@dimen/double_margin"
-            android:padding="@dimen/margin_normal" />
-    </FrameLayout>
+            android:padding="@dimen/margin_normal"/>
+    </LinearLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/movie_refresh"

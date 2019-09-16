@@ -18,13 +18,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+        <EditText
             android:id="@+id/search_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/search"
             android:background="@drawable/border_search_fill_white"
             android:drawableStart="@drawable/ic_search_black_24dp"
+            android:drawableEnd="@drawable/ic_close_black_24dp"
             android:drawableTint="@color/gray"
             android:drawablePadding="@dimen/double_margin"
             android:padding="@dimen/margin_normal" />
