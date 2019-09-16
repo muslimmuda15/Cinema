@@ -11,17 +11,17 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:orientation="horizontal"
         android:padding="@dimen/double_margin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            android:id="@+id/search_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/search"
-            android:background="@color/white"
+            android:background="@drawable/border_search_fill_white"
             android:drawableStart="@drawable/ic_search_black_24dp"
             android:drawableTint="@color/gray"
             android:drawablePadding="@dimen/double_margin"

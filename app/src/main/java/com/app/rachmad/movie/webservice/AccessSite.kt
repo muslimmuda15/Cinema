@@ -24,6 +24,20 @@ interface AccessSite{
             @Query("language") language: String
     ): Call<TvBaseData>
 
+    @GET("/3/search/movie?include_adult=false&api_key=${BuildConfig.Key}")
+    fun movieSearch(
+            @Query("query") query: String,
+            @Query("page") page: Int,
+            @Query("language") language: String
+    ): Call<MovieBaseData>
+
+    @GET("/3/search/tv?include_adult=false&api_key=${BuildConfig.Key}")
+    fun tvSearch(
+            @Query("query") query: String,
+            @Query("page") page: Int,
+            @Query("language") language: String
+    ): Call<TvBaseData>
+
     @GET("/3/movie/{movie_id}?api_key=${BuildConfig.Key}")
     fun movieDetail(
             @Path("movie_id") movieId: Int,
@@ -35,4 +49,5 @@ interface AccessSite{
             @Path("tv_id") movieId: Int,
             @Query("language") language: String
     ): Call<TvDetailData>
+
 }

@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.PagedList
 import com.app.rachmad.movie.`object`.*
 import com.app.rachmad.movie.datasource.MovieDataSource
+import com.app.rachmad.movie.datasource.MovieSearchDataSource
 import com.app.rachmad.movie.datasource.TvDataSource
 import com.app.rachmad.movie.helper.MainThreadExecutor
 import com.app.rachmad.movie.helper.Status
@@ -20,11 +21,15 @@ import retrofit2.Response
 class MovieRepository{
     var connectionMovieList = MutableLiveData<Int>()
     var connectionMovieDetail = MutableLiveData<Int>()
+    var connectionMovieSearch = MutableLiveData<Int>()
     val movieDataSource = MovieDataSource()
+    val movieSearchDataSource = MovieSearchDataSource()
     var errorMovieList: ErrorData? = null
     var errorMovieDetails: ErrorData? = null
+    var errorMovieSearch: ErrorData? = null
     var movieList: PagedList<MovieData>? = null
     var movieDetailsData: MovieDetailData? = null
+    var movieSearch: PagedList<MovieData>? = null
 
     fun refreshMovie(){
         connectionMovieList.value = null
@@ -34,6 +39,11 @@ class MovieRepository{
     fun refreshMovieDetail(){
         connectionMovieDetail.value = null
         movieDetailsData = null
+    }
+
+    fun refreshMovieSearch(){
+        connectionMovieSearch.value = null
+        movieSearch = null
     }
 
     fun movieDetails(movieId: Int, language: String){
@@ -112,6 +122,62 @@ class MovieRepository{
                         } ?: run {
                             //                        errorMovieList = ErrorData(response.errorBody(), Status.EMPTY_DATA)
                             connectionMovieList.value = -1
+                        }
+                    }
+                    else{
+                        Log.d("OkHttp", "MOVIE NOT SUCCESS : ")
+                        val type = object: TypeToken<ErrorData>() {}.type
+                        val error = Gson().fromJson<ErrorData>(response.errorBody()?.charStream(), type)
+
+                        errorMovieList = ErrorData(error.status_code, error.status_message)
+                        connectionMovieList.value = error.status_code
+                    }
+                }
+            })
+        }
+    }
+
+    fun movieSearch(query: String, language: String){
+        if(connectionMovieSearch.value == null) {
+            val service = MovieSite.connect()
+            val call = service.movieSearch(query, 1, language)
+
+            connectionMovieSearch.value = Status.LOADING
+            call.enqueue(object : Callback<MovieBaseData> {
+                override fun onFailure(call: Call<MovieBaseData>, t: Throwable) {
+                    errorMovieSearch = ErrorData(Status.UNKNOWN, t.message)
+                    connectionMovieSearch.value = -1
+                    t.printStackTrace()
+                }
+
+                override fun onResponse(call: Call<MovieBaseData>, response: Response<MovieBaseData>) {
+                    if(response.isSuccessful) {
+                        response.body()?.let {
+                            if (it.total_pages > 0) {
+                                movieSearchDataSource.setData(query, it.results, language)
+                                val exec = MainThreadExecutor()
+                                val config: PagedList.Config = PagedList.Config.Builder()
+                                        .setPageSize(it.total_results)
+                                        .setInitialLoadSizeHint(20)
+                                        .setEnablePlaceholders(false)
+                                        .setPrefetchDistance(2)
+                                        .build()
+
+                                val movieSearchPagedList = PagedList.Builder(movieSearchDataSource, config)
+                                        .setFetchExecutor(exec)
+                                        .setNotifyExecutor(exec)
+                                        .build()
+
+                                movieSearch = movieSearchPagedList
+                                connectionMovieSearch.value = Status.ACCEPTED
+
+                            } else {
+                                errorMovieSearch = ErrorData(Status.EMPTY_DATA, "")
+                                connectionMovieSearch.value = -1
+                            }
+                        } ?: run {
+                            //                        errorMovieList = ErrorData(response.errorBody(), Status.EMPTY_DATA)
+                            connectionMovieSearch.value = -1
                         }
                     }
                     else{

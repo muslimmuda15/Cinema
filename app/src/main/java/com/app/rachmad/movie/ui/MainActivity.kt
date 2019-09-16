@@ -20,7 +20,7 @@ import com.app.rachmad.movie.ui.movie.MovieDetailsActivity
 import com.app.rachmad.movie.ui.tv.TV_EXTRA
 import com.app.rachmad.movie.ui.tv.TvDetailsActivity
 import com.app.rachmad.movie.ui.movie.MovieItemFragment
-import com.app.rachmad.movie.movie.TvItemFragment
+import com.app.rachmad.movie.ui.tv.TvItemFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
 const val IS_FAVORITE_EXTRA = "IsFavorite"

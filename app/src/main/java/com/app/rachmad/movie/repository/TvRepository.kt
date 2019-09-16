@@ -9,6 +9,7 @@ import com.app.rachmad.movie.`object`.TvBaseData
 import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.`object`.TvDetailData
 import com.app.rachmad.movie.datasource.TvDataSource
+import com.app.rachmad.movie.datasource.TvSearchDataSource
 import com.app.rachmad.movie.helper.MainThreadExecutor
 import com.app.rachmad.movie.helper.Status
 import com.app.rachmad.movie.webservice.MovieSite
@@ -21,11 +22,15 @@ import retrofit2.Response
 class TvRepository {
     var connectionTvList = MutableLiveData<Int>()
     var connectionTvDetail = MutableLiveData<Int>()
+    var connectionTvSearch = MutableLiveData<Int>()
     val tvDataSource = TvDataSource()
+    val tvSearchDataSource = TvSearchDataSource()
     var errorTvList: ErrorData? = null
     var errorTvDetails: ErrorData? = null
+    var errorTvSearch: ErrorData? = null
     var tvList: PagedList<TvData>? = null
     var tvDetailsData: TvDetailData? = null
+    var tvSearch: PagedList<TvData>? = null
 
     fun refreshTvDetail(){
         connectionTvDetail.value = null
@@ -119,6 +124,67 @@ class TvRepository {
                     }
                     else{
                         Log.d("OkHttp", "TV NOT SUCCESS : ")
+                        val type = object: TypeToken<ErrorData>() {}.type
+                        val error = Gson().fromJson<ErrorData>(response.errorBody()?.charStream(), type)
+
+                        errorTvList = ErrorData(error.status_code, error.status_message)
+                        connectionTvList.value = error.status_code
+                    }
+                }
+            })
+        }
+    }
+
+    fun refreshTvSearch(){
+        connectionTvSearch.value = null
+        tvSearch = null
+    }
+
+    fun tvSearch(query: String, language: String){
+        if(connectionTvSearch.value == null) {
+            val service = MovieSite.connect()
+            val call = service.tvSearch(query, 1, language)
+
+            connectionTvSearch.value = Status.LOADING
+            call.enqueue(object : Callback<TvBaseData> {
+                override fun onFailure(call: Call<TvBaseData>, t: Throwable) {
+                    errorTvSearch = ErrorData(Status.UNKNOWN, t.message)
+                    connectionTvSearch.value = -1
+                    t.printStackTrace()
+                }
+
+                override fun onResponse(call: Call<TvBaseData>, response: Response<TvBaseData>) {
+                    if(response.isSuccessful) {
+                        response.body()?.let {
+                            if (it.total_pages > 0) {
+                                tvSearchDataSource.setData(query, it.results, language)
+                                val exec = MainThreadExecutor()
+                                val config: PagedList.Config = PagedList.Config.Builder()
+                                        .setPageSize(it.total_results)
+                                        .setInitialLoadSizeHint(20)
+                                        .setEnablePlaceholders(false)
+                                        .setPrefetchDistance(2)
+                                        .build()
+
+                                val movieSearchPagedList = PagedList.Builder(tvSearchDataSource, config)
+                                        .setFetchExecutor(exec)
+                                        .setNotifyExecutor(exec)
+                                        .build()
+
+                                tvSearch = movieSearchPagedList
+                                connectionTvSearch.value = Status.ACCEPTED
+
+                            } else {
+                                errorTvSearch = ErrorData(Status.EMPTY_DATA, "")
+                                connectionTvSearch.value = -1
+                            }
+                        } ?: run {
+                            //                        errorMovieList = ErrorData(response.errorBody(), Status.EMPTY_DATA)
+                            connectionTvSearch.value = -1
+                        }
+                    }
+                    else{
+                        Log.d("OkHttp", "MOVIE NOT SUCCESS : ")
                         val type = object: TypeToken<ErrorData>() {}.type
                         val error = Gson().fromJson<ErrorData>(response.errorBody()?.charStream(), type)
 

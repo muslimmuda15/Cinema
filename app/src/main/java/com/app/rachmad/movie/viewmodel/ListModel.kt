@@ -57,6 +57,20 @@ class ListModel: ViewModel(){
     fun errorTvDetail(): ErrorData? = tvRepository.errorTvDetails
     fun getTvDetail(): TvDetailData? = tvRepository.tvDetailsData
 
+    fun movieSearch(query: String, language: String) = movieRepository.movieSearch(query, language)
+    fun connectionMovieSearch(): LiveData<Int> = movieRepository.connectionMovieSearch
+    fun errorMovieSearch(): ErrorData? = movieRepository.errorMovieSearch
+    fun getMovieSearch(): PagedList<MovieData>? = movieRepository.movieSearch
+    fun doLoadingMovieSearch(): LiveData<Boolean> = movieRepository.movieSearchDataSource.doLoading
+    fun refreshMovieSearch() = movieRepository.refreshMovieSearch()
+
+    fun tvSearch(query: String, language: String) = tvRepository.tvSearch(query, language)
+    fun connectionTvSearch(): LiveData<Int> = tvRepository.connectionTvSearch
+    fun errorTvSearch(): ErrorData? = tvRepository.errorTvSearch
+    fun getTvSearch(): PagedList<TvData>? = tvRepository.tvSearch
+    fun doLoadingTvSearch(): LiveData<Boolean> = tvRepository.tvSearchDataSource.doLoading
+    fun refreshTvSearch() = tvRepository.refreshTvSearch()
+
     fun insertMovieFavorite(movieData: MovieData) = favoriteModel.insertMovieFavorite(movieData)
     fun insertTvFavorite(tvData: TvData) = favoriteModel.insertTvFavorite(tvData)
     fun countAllFavoriteMovie(): Int = favoriteModel.countAllFavoriteMovie()

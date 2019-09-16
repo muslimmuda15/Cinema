@@ -9,14 +9,13 @@ import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.Observer
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.app.rachmad.movie.BuildConfig
 import com.app.rachmad.movie.GlideApp
 import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.TvData
-import com.app.rachmad.movie.movie.TvItemFragment
+import com.app.rachmad.movie.ui.tv.TvItemFragment
 import com.app.rachmad.movie.viewmodel.ListModel
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -28,7 +27,6 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class TvItemRecyclerViewAdapter(
-        private val viewModel: ListModel,
         private val mListener: TvItemFragment.OnTvClickListener?)
     : PagedListAdapter<TvData, TvItemRecyclerViewAdapter.ViewHolder>(checkDifferent) {
 

@@ -1,42 +1,36 @@
-package com.app.rachmad.movie.ui.movie
+package com.app.rachmad.movie.ui.movie.search
 
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.text.HtmlCompat
+import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
-import androidx.lifecycle.Observer
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.app.rachmad.movie.BuildConfig
 import com.app.rachmad.movie.GlideApp
 import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.MovieData
-import com.app.rachmad.movie.viewmodel.ListModel
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import kotlinx.android.synthetic.main.fragment_movie_search_item.view.*
 
-import kotlinx.android.synthetic.main.fragment_movie_item.view.*
-import java.text.SimpleDateFormat
-import java.util.*
-
-class MovieItemRecyclerViewAdapter(
-        private val mListener: MovieItemFragment.OnMovieClickListener?)
-    : PagedListAdapter<MovieData, MovieItemRecyclerViewAdapter.ViewHolder>(checkDifferent) {
+class MovieSearchItemRecyclerViewAdapter(
+        private val mListener: MovieSearchItemFragment.OnMovieSearchListener?)
+    : PagedListAdapter<MovieData, MovieSearchItemRecyclerViewAdapter.ViewHolder>(checkDifferent) {
 
     private val mOnClickListener: View.OnClickListener
 
     init {
         mOnClickListener = View.OnClickListener { v ->
             val item = v.tag as MovieData
-            mListener?.onClickMovie(item)
+            mListener?.onMovieSearch(item)
         }
     }
 
@@ -52,7 +46,7 @@ class MovieItemRecyclerViewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.fragment_movie_item, parent, false)
+                .inflate(R.layout.fragment_movie_search_item, parent, false)
         return ViewHolder(view)
     }
 
@@ -61,7 +55,7 @@ class MovieItemRecyclerViewAdapter(
             GlideApp.with(holder.image)
                     .load(BuildConfig.IMAGE_URL + item.poster_path)
                     .fitCenter()
-                    .listener(object: RequestListener<Drawable> {
+                    .listener(object : RequestListener<Drawable> {
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                             holder.imageLoading.stopShimmer()
                             return false
@@ -77,15 +71,15 @@ class MovieItemRecyclerViewAdapter(
 
             with(holder) {
                 title.text = item.title
-                overview.text = if(item.overview.isBlank())
-                    HtmlCompat.fromHtml("<i>${itemView.context.getString(R.string.no_preview)}</i>", HtmlCompat.FROM_HTML_MODE_LEGACY)
+                overview.text = if (item.overview.isBlank())
+                    androidx.core.text.HtmlCompat.fromHtml("<i>${itemView.context.getString(com.app.rachmad.movie.R.string.no_preview)}</i>", androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY)
                 else
                     item.overview
 
-                var df = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                var df = java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
                 val newDate = df.parse(item.release_date)
-                Log.d("date", item.release_date + " -> " + newDate.toString())
-                df = SimpleDateFormat("MMM yyyy", Locale.US)
+                android.util.Log.d("date", item.release_date + " -> " + newDate.toString())
+                df = java.text.SimpleDateFormat("MMM yyyy", java.util.Locale.US)
                 date.text = df.format(newDate)
 
                 ratingStar.rating = item.vote_average / 2

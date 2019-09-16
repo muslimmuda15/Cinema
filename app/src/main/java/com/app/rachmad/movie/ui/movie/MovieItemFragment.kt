@@ -2,6 +2,7 @@ package com.app.rachmad.movie.ui.movie
 
 import android.animation.AnimatorInflater
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,14 +18,15 @@ import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
 import com.app.rachmad.movie.ui.BaseActivity
+import com.app.rachmad.movie.ui.BaseFragment
 import com.app.rachmad.movie.ui.IS_FAVORITE_EXTRA
+import com.app.rachmad.movie.ui.movie.search.MovieSearchActivity
 import com.app.rachmad.movie.viewmodel.ListModel
 import kotlinx.android.synthetic.main.fragment_movie_item_list.*
 
-class MovieItemFragment : Fragment() {
+class MovieItemFragment : BaseFragment() {
     private var listener: OnMovieClickListener? = null
     lateinit var adapter: MovieItemRecyclerViewAdapter
-    lateinit var viewModel: ListModel
     var isFavorite = false
 
     private fun accessData(){
@@ -122,7 +124,6 @@ class MovieItemFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_movie_item_list, container, false)
-        viewModel = (activity as BaseActivity).viewModel
         return view
     }
 
@@ -131,7 +132,7 @@ class MovieItemFragment : Fragment() {
 
         accessData()
 
-        adapter = MovieItemRecyclerViewAdapter(viewModel, listener)
+        adapter = MovieItemRecyclerViewAdapter(listener)
         list.layoutManager = LinearLayoutManager(context)
         list.adapter = adapter
 
@@ -153,6 +154,20 @@ class MovieItemFragment : Fragment() {
                 animator.setDuration(500)
                 animator.start()
             })
+        }
+
+        viewModel.doLoadingMovieSearch().observe(this, Observer<Boolean> {
+            val animator = AnimatorInflater.loadAnimator(this.context, if (it)
+                R.animator.fade_in
+            else
+                R.animator.fade_out)
+            animator.setTarget(loading_more)
+            animator.setDuration(500)
+            animator.start()
+        })
+
+        search_text.setOnClickListener {
+            startActivity(Intent(this.context, MovieSearchActivity::class.java))
         }
     }
 

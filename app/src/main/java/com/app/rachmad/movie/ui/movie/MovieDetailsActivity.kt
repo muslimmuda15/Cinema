@@ -97,7 +97,6 @@ class MovieDetailsActivity : BaseActivity() {
                     val genreCard = layoutInflater.inflate(R.layout.custom_chip, null) as FrameLayout
                     genreCard.genre_text.text = genre_id.name
                     genres_layout.addView(genreCard)
-
                 }
 
                 if(production_companies.size > 0) {

@@ -14,7 +14,7 @@ import androidx.viewpager.widget.ViewPager
 import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.TvData
-import com.app.rachmad.movie.movie.TvItemFragment
+import com.app.rachmad.movie.ui.tv.TvItemFragment
 import com.app.rachmad.movie.ui.movie.MOVIE_EXTRA
 import com.app.rachmad.movie.ui.movie.MovieDetailsActivity
 import com.app.rachmad.movie.ui.movie.MovieItemFragment

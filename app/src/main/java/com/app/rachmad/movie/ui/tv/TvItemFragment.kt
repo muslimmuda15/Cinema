@@ -1,7 +1,8 @@
-package com.app.rachmad.movie.movie
+package com.app.rachmad.movie.ui.tv
 
 import android.animation.AnimatorInflater
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,22 +12,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
-import com.app.rachmad.movie.ui.MainActivity
 import com.app.rachmad.movie.R
-import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
 import com.app.rachmad.movie.ui.BaseActivity
+import com.app.rachmad.movie.ui.BaseFragment
 import com.app.rachmad.movie.ui.IS_FAVORITE_EXTRA
 import com.app.rachmad.movie.ui.tv.TvItemRecyclerViewAdapter
+import com.app.rachmad.movie.ui.tv.search.TvSearchActivity
 import com.app.rachmad.movie.viewmodel.ListModel
 import kotlinx.android.synthetic.main.fragment_tv_item_list.*
 
-class TvItemFragment : Fragment() {
+class TvItemFragment : BaseFragment() {
     private var listener: OnTvClickListener? = null
     lateinit var adapter: TvItemRecyclerViewAdapter
-    lateinit var viewModel: ListModel
     var isFavorite = false
 
     private fun accessData(){
@@ -124,14 +124,13 @@ class TvItemFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_tv_item_list, container, false)
-        viewModel = (activity as BaseActivity).viewModel
         return view
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        adapter = TvItemRecyclerViewAdapter(viewModel, listener)
+        adapter = TvItemRecyclerViewAdapter(listener)
         list.layoutManager = LinearLayoutManager(context)
         list.adapter = adapter
 
@@ -155,6 +154,10 @@ class TvItemFragment : Fragment() {
                 animator.setDuration(500)
                 animator.start()
             })
+        }
+
+        search_text.setOnClickListener {
+            startActivity(Intent(this.context, TvSearchActivity::class.java))
         }
     }
 
