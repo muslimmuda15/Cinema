@@ -82,11 +82,13 @@ class MovieItemRecyclerViewAdapter(
                 else
                     item.overview
 
-                var df = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                val newDate = df.parse(item.release_date)
-                Log.d("date", item.release_date + " -> " + newDate.toString())
-                df = SimpleDateFormat("MMM yyyy", Locale.US)
-                date.text = df.format(newDate)
+                if(!item.release_date.isBlank()) {
+                    var df = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                    val newDate = df.parse(item.release_date)
+                    Log.d("date", item.release_date + " -> " + newDate.toString())
+                    df = SimpleDateFormat("MMM yyyy", Locale.US)
+                    date.text = df.format(newDate)
+                }
 
                 ratingStar.rating = item.vote_average / 2
                 ratingText.text = item.vote_average.toString()

@@ -11,12 +11,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.tv.search.TvSearchActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".ui.movie.search.MovieSearchActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ui.tv.TvDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity

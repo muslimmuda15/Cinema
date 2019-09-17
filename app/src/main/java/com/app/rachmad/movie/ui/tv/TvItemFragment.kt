@@ -2,11 +2,9 @@ package com.app.rachmad.movie.ui.tv
 
 import android.animation.AnimatorInflater
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
@@ -19,12 +17,8 @@ import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.helper.LanguageProvide
 import com.app.rachmad.movie.helper.Status
-import com.app.rachmad.movie.ui.BaseActivity
 import com.app.rachmad.movie.ui.BaseFragment
 import com.app.rachmad.movie.ui.IS_FAVORITE_EXTRA
-import com.app.rachmad.movie.ui.tv.TvItemRecyclerViewAdapter
-import com.app.rachmad.movie.ui.tv.search.TvSearchActivity
-import com.app.rachmad.movie.viewmodel.ListModel
 import kotlinx.android.synthetic.main.fragment_tv_item_list.*
 
 class TvItemFragment : BaseFragment() {

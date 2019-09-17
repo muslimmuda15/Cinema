@@ -71,10 +71,12 @@ class TvItemRecyclerViewAdapter(
                 else
                     item.overview
 
-                var df = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-                val newDate = df.parse(item.first_air_date)
-                df = SimpleDateFormat("MMM yyyy", Locale.US)
-                date.text = df.format(newDate)
+                if(!item.first_air_date.isBlank()) {
+                    var df = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                    val newDate = df.parse(item.first_air_date)
+                    df = SimpleDateFormat("MMM yyyy", Locale.US)
+                    date.text = df.format(newDate)
+                }
 
                 ratingStar.rating = item.vote_average / 2
                 ratingText.text = item.vote_average.toString()
