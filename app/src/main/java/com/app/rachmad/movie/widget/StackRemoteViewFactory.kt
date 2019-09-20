@@ -84,23 +84,25 @@ class StackRemoteViewFactory: RemoteViewsService.RemoteViewsFactory, LifecycleOw
 //        val url = URL(BuildConfig.IMAGE_URL + mWidgetItems[position].backdrop_path)
 //        rv.setImageViewUri(R.id.image_widget, Uri.parse( url.toURI().toString()))
 
-        val bitmap = GlideApp
-                .with(mContext)
-                .asBitmap()
-                .load(BuildConfig.IMAGE_URL + mWidgetItems[position].image)
-                .centerCrop()
-                .submit()
-                .get()
+        if(mWidgetItems.size > 0) {
+            val bitmap = GlideApp
+                    .with(mContext)
+                    .asBitmap()
+                    .load(BuildConfig.IMAGE_URL + mWidgetItems[position].image)
+                    .centerCrop()
+                    .submit()
+                    .get()
 
-        rv.setImageViewBitmap(R.id.image_widget, bitmap)
-        rv.setTextViewText(R.id.title_widget, mWidgetItems[position].name)
+            rv.setImageViewBitmap(R.id.image_widget, bitmap)
+            rv.setTextViewText(R.id.title_widget, mWidgetItems[position].name)
 
-        val extras = Bundle()
-        extras.putInt(EXTRA_ITEM, position)
-        val fillInIntent = Intent()
-        fillInIntent.putExtras(extras)
+            val extras = Bundle()
+            extras.putInt(EXTRA_ITEM, position)
+            val fillInIntent = Intent()
+            fillInIntent.putExtras(extras)
 
-        rv.setOnClickFillInIntent(R.id.image_widget, fillInIntent)
+            rv.setOnClickFillInIntent(R.id.image_widget, fillInIntent)
+        }
         return rv
     }
 
