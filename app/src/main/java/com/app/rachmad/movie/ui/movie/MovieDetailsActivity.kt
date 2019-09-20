@@ -1,21 +1,22 @@
 package com.app.rachmad.movie.ui.movie
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.app.PendingIntent
+import android.appwidget.AppWidgetManager
+import android.content.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.widget.FrameLayout
+import android.widget.RemoteViews
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.lifecycle.Observer
 import com.app.rachmad.movie.BuildConfig
 import com.app.rachmad.movie.GlideApp
 import com.app.rachmad.movie.R
+import com.app.rachmad.movie.`object`.FilmWidgetData
 import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.MovieDetailData
 import com.app.rachmad.movie.helper.LanguageProvide
@@ -23,6 +24,7 @@ import com.app.rachmad.movie.helper.Status
 import com.app.rachmad.movie.ui.BaseActivity
 import com.app.rachmad.movie.ui.FavoriteActivity
 import com.app.rachmad.movie.ui.helper.UnfavoriteDialog
+import com.app.rachmad.movie.widget.FavoriteWidget
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -226,6 +228,12 @@ class MovieDetailsActivity : BaseActivity() {
             }
             else {
                 viewModel.insertMovieFavorite(movieData)
+                val filmWidgetData = FilmWidgetData(
+                        0,
+                        movieData.title,
+                        movieData.backdrop_path
+                )
+                viewModel.insertFilmWidget(filmWidgetData)
             }
         }
 

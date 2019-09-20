@@ -59,12 +59,15 @@ interface FavoriteQuery {
     @Query("select count(*) from tv where id = :id")
     fun countFavoriteTv(id: Int): Int
 
-//    @Insert(onConflict = REPLACE)
-//    fun insertWidget(filwmWidgetData: FilmWidgetData)
-//
-//    @Delete
-//    fun deleteWidget(filmWidgetData: FilmWidgetData)
-//
-//    @Query("select * from widget")
-//    fun widgetData(): LiveData<List<FilmWidgetData>>
+    @Insert(onConflict = REPLACE)
+    fun insertWidget(filwmWidgetData: FilmWidgetData)
+
+    @Query("delete from widget where name = :name")
+    fun deleteWidget(name: String)
+
+    @Query("select * from widget")
+    fun widgetData(): List<FilmWidgetData>
+
+    @Query("select * from widget")
+    fun widgetDataLive(): LiveData<List<FilmWidgetData>>
 }

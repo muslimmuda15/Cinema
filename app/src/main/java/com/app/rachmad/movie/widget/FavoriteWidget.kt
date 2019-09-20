@@ -8,9 +8,15 @@ import android.content.Intent
 import android.net.Uri
 import android.widget.RemoteViews
 import com.app.rachmad.movie.R
+import android.provider.SyncStateContract.Helpers.update
+import android.widget.Toast
+import androidx.core.app.NotificationCompat.getExtras
+import android.provider.SyncStateContract.Helpers.update
 
 const val EXTRA_ITEM = "ExtraItem"
 const val TOAST_ACTION = "ToastAction"
+const val WIDGET_IDS_KEY = "WidgetIdsKey"
+const val WIDGET_DATA_KEY = "WidgetDataKey"
 class FavoriteWidget : AppWidgetProvider() {
 
     override fun onEnabled(context: Context) {
@@ -21,9 +27,10 @@ class FavoriteWidget : AppWidgetProvider() {
 
     override fun onReceive(context: Context, intent: Intent) {
         super.onReceive(context, intent)
-        intent.action?.let {
-            if(intent.action == TOAST_ACTION){
-
+        val ids = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)
+        if (intent.hasExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS)) {
+            for (appWidgetId in ids) {
+                updateAppWidget(context, AppWidgetManager.getInstance(context), appWidgetId)
             }
         }
     }
@@ -52,6 +59,7 @@ class FavoriteWidget : AppWidgetProvider() {
         views.setPendingIntentTemplate(R.id.stack_view, toastPendingIntent)
 
         appWidgetManager.updateAppWidget(appWidgetId, views)
+        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.stack_view);
     }
 }
 

@@ -23,6 +23,7 @@ import com.bumptech.glide.request.transition.Transition
 import android.content.ComponentName
 import android.appwidget.AppWidgetManager
 import android.net.Uri
+import com.app.rachmad.movie.`object`.FilmWidgetData
 import java.net.URL
 
 
@@ -31,7 +32,7 @@ class StackRemoteViewFactory: RemoteViewsService.RemoteViewsFactory, LifecycleOw
         return LifecycleRegistry(this)
     }
 
-    private var mWidgetItems: ArrayList<MovieData> = ArrayList()
+    private var mWidgetItems: ArrayList<FilmWidgetData> = ArrayList()
     private var mContext: Context
 
     constructor(context: Context){
@@ -43,11 +44,12 @@ class StackRemoteViewFactory: RemoteViewsService.RemoteViewsFactory, LifecycleOw
     }
 
     override fun onDataSetChanged() {
+        mWidgetItems.clear()
         val favoriteModel = FavoriteModel(mContext)
-        val favorite = favoriteModel.getFavoriteMovie()
-        favorite.forEach {
+        val favorite = favoriteModel.getWidgetFavorite()
+        favorite?.forEach {
             mWidgetItems.add(it)
-            Log.d("favorite", it.title)
+            Log.d("favorite", it.name)
         }
     }
 
@@ -85,13 +87,13 @@ class StackRemoteViewFactory: RemoteViewsService.RemoteViewsFactory, LifecycleOw
         val bitmap = GlideApp
                 .with(mContext)
                 .asBitmap()
-                .load(BuildConfig.IMAGE_URL + mWidgetItems[position].backdrop_path)
+                .load(BuildConfig.IMAGE_URL + mWidgetItems[position].image)
                 .centerCrop()
                 .submit()
                 .get()
 
         rv.setImageViewBitmap(R.id.image_widget, bitmap)
-//        rv.setTextViewText(R.id.title_widget, mWidgetItems[position].title)
+        rv.setTextViewText(R.id.title_widget, mWidgetItems[position].name)
 
         val extras = Bundle()
         extras.putInt(EXTRA_ITEM, position)

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
+import com.app.rachmad.movie.`object`.FilmWidgetData
 import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.sqlite.CinemaDatabase
@@ -111,5 +112,25 @@ class FavoriteModel(c: Context) {
                 false
         }
         return favorited
+    }
+
+    fun insertWidgetFavorite(filmWidgetData: FilmWidgetData){
+        database?.favoriteDatabase()?.insertWidget(filmWidgetData)
+    }
+
+    fun getWidgetFavorite(): List<FilmWidgetData>?{
+        return database?.favoriteDatabase()?.widgetData()
+    }
+
+    fun deleteWidgetFavorite(name: String){
+        database?.favoriteDatabase()?.deleteWidget(name)
+    }
+
+    fun getWIdgetFavoriteLive(): LiveData<List<FilmWidgetData>>{
+        var data: LiveData<List<FilmWidgetData>> = MutableLiveData()
+        database?.let {
+            data = it.favoriteDatabase().widgetDataLive()
+        }
+        return data
     }
 }

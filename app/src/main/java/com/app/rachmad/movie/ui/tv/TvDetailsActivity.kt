@@ -1,9 +1,7 @@
 package com.app.rachmad.movie.ui.tv
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.appwidget.AppWidgetManager
+import android.content.*
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.provider.Settings
@@ -16,6 +14,7 @@ import androidx.lifecycle.Observer
 import com.app.rachmad.movie.BuildConfig
 import com.app.rachmad.movie.GlideApp
 import com.app.rachmad.movie.R
+import com.app.rachmad.movie.`object`.FilmWidgetData
 import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.`object`.TvDetailData
 import com.app.rachmad.movie.helper.LanguageProvide
@@ -23,6 +22,7 @@ import com.app.rachmad.movie.helper.Status
 import com.app.rachmad.movie.ui.BaseActivity
 import com.app.rachmad.movie.ui.FavoriteActivity
 import com.app.rachmad.movie.ui.helper.UnfavoriteDialog
+import com.app.rachmad.movie.widget.FavoriteWidget
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -224,6 +224,12 @@ class TvDetailsActivity : BaseActivity() {
             }
             else {
                 viewModel.insertTvFavorite(tvData)
+                val filmWidgetData = FilmWidgetData(
+                        0,
+                        tvData.name,
+                        tvData.backdrop_path
+                )
+                viewModel.insertFilmWidget(filmWidgetData)
             }
         }
 
