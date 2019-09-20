@@ -29,4 +29,8 @@
     <string name="no">Tidak</string>
     <string name="search">Cari</string>
     <string name="empty_data">Tidak ada data</string>
+
+    <string name="appwidget_text">Data Favorite</string>
+    <string name="add_widget">Tambah widget</string>
+    <string name="no_view">Favorite kosong</string>
 </resources>

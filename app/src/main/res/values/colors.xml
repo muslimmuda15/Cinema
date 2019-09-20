@@ -8,4 +8,5 @@
     <color name="red">#FF0000</color>
     <color name="transparent">#00000000</color>
     <color name="gray">#aaaaaa</color>
+    <color name="primary_semi_transparent">#773F51B5</color>
 </resources>

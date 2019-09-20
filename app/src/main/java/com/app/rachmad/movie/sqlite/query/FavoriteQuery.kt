@@ -7,6 +7,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import com.app.rachmad.movie.`object`.FilmWidgetData
 import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.TvData
 import com.app.rachmad.movie.helper.Status
@@ -16,8 +17,17 @@ interface FavoriteQuery {
     @Query("select * from movie")
     fun getFavoriteMovieList(): DataSource.Factory<Int, MovieData>
 
+    @Query("select * from movie")
+    fun getFavoriteMovieStackList(): LiveData<List<MovieData>>
+
+    @Query("select * from movie")
+    fun getFavoriteMovie(): List<MovieData>
+
     @Query("select * from tv")
     fun getFavoriteTvList(): DataSource.Factory<Int, TvData>
+
+    @Query("select * from tv")
+    fun getFavoriteTvStackList(): LiveData<List<TvData>>
 
     @Insert(onConflict = REPLACE)
     fun insertMovieFavorite(movieData: MovieData)
@@ -48,4 +58,13 @@ interface FavoriteQuery {
 
     @Query("select count(*) from tv where id = :id")
     fun countFavoriteTv(id: Int): Int
+
+//    @Insert(onConflict = REPLACE)
+//    fun insertWidget(filwmWidgetData: FilmWidgetData)
+//
+//    @Delete
+//    fun deleteWidget(filmWidgetData: FilmWidgetData)
+//
+//    @Query("select * from widget")
+//    fun widgetData(): LiveData<List<FilmWidgetData>>
 }

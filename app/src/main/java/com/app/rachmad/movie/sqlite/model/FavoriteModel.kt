@@ -27,6 +27,30 @@ class FavoriteModel(c: Context) {
         return favoriteList
     }
 
+    fun getFavoriteMovieStackList(): LiveData<List<MovieData>>{
+        var favoriteList: LiveData<List<MovieData>> = MutableLiveData()
+        database?.let {
+            favoriteList = it.favoriteDatabase().getFavoriteMovieStackList()
+        }
+        return favoriteList
+    }
+
+    fun getFavoriteMovie(): List<MovieData>{
+        var favoriteList: List<MovieData> = ArrayList()
+        database?.let {
+            favoriteList = it.favoriteDatabase().getFavoriteMovie()
+        }
+        return favoriteList
+    }
+
+    fun getFavoriteTvStackList(): LiveData<List<TvData>>{
+        var favoriteList: LiveData<List<TvData>> = MutableLiveData()
+        database?.let {
+            favoriteList = it.favoriteDatabase().getFavoriteTvStackList()
+        }
+        return favoriteList
+    }
+
     fun countAllFavoriteMovie(): Int {
         return database?.favoriteDatabase()?.countAllFavoriteMovie() ?: 0
     }
