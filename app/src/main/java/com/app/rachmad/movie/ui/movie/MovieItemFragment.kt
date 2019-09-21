@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.lifecycle.Observer
 import androidx.paging.PagedList
 import com.app.rachmad.movie.R
@@ -101,6 +102,15 @@ class MovieItemFragment : BaseFragment() {
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
             })
+
+            search_text.setOnEditorActionListener { textView, i, keyEvent ->
+                if(i == EditorInfo.IME_ACTION_SEARCH){
+                    viewModel.refreshMovieSearch()
+                    viewModel.movieSearch(search_text.text.toString(), LanguageProvide.getLanguage(context))
+                    true
+                }
+                false
+            }
 
             search_text.setOnTouchListener { view, motionEvent ->
                 val DRAWABLE_LEFT = 0

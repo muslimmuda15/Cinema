@@ -28,7 +28,10 @@
             android:drawableEnd="@drawable/ic_close_black_24dp"
             android:drawableTint="@color/gray"
             android:drawablePadding="@dimen/double_margin"
-            android:padding="@dimen/margin_normal" />
+            android:padding="@dimen/margin_normal"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:singleLine="true"/>
     </FrameLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
