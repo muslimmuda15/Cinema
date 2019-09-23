@@ -2,11 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.app.rachmad.movie">
 
-    <permission android:name="com.dicoding.mynotesapp.READ_DATABASE" android:protectionLevel="normal"/>
-    <permission android:name="com.dicoding.mynotesapp.WRITE_DATABASE" android:protectionLevel="normal"/>
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -18,6 +13,7 @@
         <activity
             android:name=".ui.tv.TvDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".ui.FavoriteActivity"
             android:label="@string/favorite_title"
@@ -34,8 +30,13 @@
         <activity
             android:name=".ui.movie.MovieDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <receiver
-            android:name=".widget.FavoriteWidget">
+        <provider
+            android:name=".externalprovide.FavoriteProvide"
+            android:authorities="favorite"
+            android:enabled="true"
+            android:exported="true" />
+
+        <receiver android:name=".widget.FavoriteWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -47,6 +48,17 @@
 
         <service
             android:name=".widget.StackWidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
+    <permission
+        android:name="com.dicoding.mynotesapp.WRITE_DATABASE"
+        android:protectionLevel="normal" />
+
+    <permission
+        android:name="com.dicoding.mynotesapp.READ_DATABASE"
+        android:protectionLevel="normal" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
 </manifest>
