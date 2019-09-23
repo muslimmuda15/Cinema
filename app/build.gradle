@@ -22,6 +22,7 @@ android {
             buildConfigField "String", "SERVER_URL", '"https://api.themoviedb.org"'
             buildConfigField "String", "IMAGE_URL", '"https://image.tmdb.org/t/p/w500"'
             buildConfigField "String", "DB_NAME", '"cinemadebug.db"'
+            buildConfigField "String", "PROVIDE_NAME", '"com.app.rachmad.movie"'
             buildConfigField "String", "Key", "${key}"
         }
         release {
@@ -29,6 +30,7 @@ android {
             buildConfigField "String", "IMAGE_URL", '"https://image.tmdb.org/t/p/w500"'
             buildConfigField "String", "DB_NAME", '"cinema.db"'
             buildConfigField "String", "Key", "${key}"
+            buildConfigField "String", "PROVIDE_NAME", '"com.app.rachmad.movie"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

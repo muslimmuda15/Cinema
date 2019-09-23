@@ -10,4 +10,6 @@ object Status{
 
     const val MOVIE = 100
     const val TV = 101
+    const val MOVIE_ID = 102
+    const val TV_ID = 103
 }

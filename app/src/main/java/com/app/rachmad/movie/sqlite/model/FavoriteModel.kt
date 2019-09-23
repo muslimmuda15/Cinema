@@ -1,6 +1,7 @@
 package com.app.rachmad.movie.sqlite.model
 
 import android.content.Context
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.DataSource
@@ -44,6 +45,20 @@ class FavoriteModel(c: Context) {
         return favoriteList
     }
 
+    fun getFavoriteTv(): List<TvData>{
+        var favoriteList: List<TvData> = ArrayList()
+        database?.let {
+            favoriteList = it.favoriteDatabase().getFavoriteTv()
+        }
+        return favoriteList
+    }
+
+    fun getFavoriteMovieCursor(): Cursor{
+        return database!!.favoriteDatabase().getFavoriteMovieCursor()
+    }
+
+    fun getFavoriteTvCursor(): Cursor = database!!.favoriteDatabase().getFavoriteTvCursor()
+
     fun getFavoriteTvStackList(): LiveData<List<TvData>>{
         var favoriteList: LiveData<List<TvData>> = MutableLiveData()
         database?.let {
@@ -52,21 +67,17 @@ class FavoriteModel(c: Context) {
         return favoriteList
     }
 
-    fun countAllFavoriteMovie(): Int {
-        return database?.favoriteDatabase()?.countAllFavoriteMovie() ?: 0
-    }
+    fun countAllFavoriteMovie(): Int = database?.favoriteDatabase()?.countAllFavoriteMovie() ?: 0
 
-    fun countAllFavoriteTv(): Int {
-        return database?.favoriteDatabase()?.countAllFavoriteTv() ?: 0
-    }
+    fun countAllFavoriteTv(): Int = database?.favoriteDatabase()?.countAllFavoriteTv() ?: 0
 
-    fun insertMovieFavorite(movieData: MovieData){
-        database?.favoriteDatabase()?.insertMovieFavorite(movieData)
-    }
+    fun insertMovieFavorite(movieData: MovieData) = database?.favoriteDatabase()?.insertMovieFavorite(movieData)
 
-    fun insertTvFavorite(tvData: TvData){
-        database?.favoriteDatabase()?.insertTvFavorite(tvData)
-    }
+    fun insertTvFavorite(tvData: TvData) = database?.favoriteDatabase()?.insertTvFavorite(tvData)
+
+    fun insertMovieFavoriteCursor(movieData: MovieData): Long = database?.favoriteDatabase()?.insertMovieFavoriteCursor(movieData) ?: 0
+
+    fun insertTvFavoriteCursor(tvData: TvData): Long = database?.favoriteDatabase()?.insertTvFavoriteCursor(tvData) ?: 0
 
     fun countFavoritedMovieLive(id: Int): LiveData<Int>{
         var favorited: LiveData<Int> = MutableLiveData()
@@ -84,13 +95,9 @@ class FavoriteModel(c: Context) {
         return favorited
     }
 
-    fun deleteMovieFavorite(movieData: MovieData){
-        database?.favoriteDatabase()?.deleteMovieFavorite(movieData)
-    }
+    fun deleteMovieFavorite(movieData: MovieData) = database?.favoriteDatabase()?.deleteMovieFavorite(movieData)
 
-    fun deleteTvFavorite(tvData: TvData){
-        database?.favoriteDatabase()?.deleteTvFavorite(tvData)
-    }
+    fun deleteTvFavorite(tvData: TvData) = database?.favoriteDatabase()?.deleteTvFavorite(tvData)
 
     fun isFavoritedMovie(id: Int): Boolean{
         var favorited = false
@@ -114,17 +121,11 @@ class FavoriteModel(c: Context) {
         return favorited
     }
 
-    fun insertWidgetFavorite(filmWidgetData: FilmWidgetData){
-        database?.favoriteDatabase()?.insertWidget(filmWidgetData)
-    }
+    fun insertWidgetFavorite(filmWidgetData: FilmWidgetData) = database?.favoriteDatabase()?.insertWidget(filmWidgetData)
 
-    fun getWidgetFavorite(): List<FilmWidgetData>?{
-        return database?.favoriteDatabase()?.widgetData()
-    }
+    fun getWidgetFavorite(): List<FilmWidgetData>? = database?.favoriteDatabase()?.widgetData()
 
-    fun deleteWidgetFavorite(name: String){
-        database?.favoriteDatabase()?.deleteWidget(name)
-    }
+    fun deleteWidgetFavorite(name: String) = database?.favoriteDatabase()?.deleteWidget(name)
 
     fun getWIdgetFavoriteLive(): LiveData<List<FilmWidgetData>>{
         var data: LiveData<List<FilmWidgetData>> = MutableLiveData()

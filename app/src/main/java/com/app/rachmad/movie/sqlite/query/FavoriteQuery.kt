@@ -1,5 +1,6 @@
 package com.app.rachmad.movie.sqlite.query
 
+import android.database.Cursor
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.Dao
@@ -24,6 +25,15 @@ interface FavoriteQuery {
     fun getFavoriteMovie(): List<MovieData>
 
     @Query("select * from tv")
+    fun getFavoriteTv(): List<TvData>
+
+    @Query("select * from movie")
+    fun getFavoriteMovieCursor(): Cursor
+
+    @Query("select * from tv")
+    fun getFavoriteTvCursor(): Cursor
+
+    @Query("select * from tv")
     fun getFavoriteTvList(): DataSource.Factory<Int, TvData>
 
     @Query("select * from tv")
@@ -34,6 +44,12 @@ interface FavoriteQuery {
 
     @Insert(onConflict = REPLACE)
     fun insertTvFavorite(tvData: TvData)
+
+    @Insert(onConflict = REPLACE)
+    fun insertMovieFavoriteCursor(movieData: MovieData): Long
+
+    @Insert(onConflict = REPLACE)
+    fun insertTvFavoriteCursor(tvData: TvData): Long
 
     @Query("select count(*) from movie")
     fun countAllFavoriteMovie(): Int
