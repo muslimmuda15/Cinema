@@ -81,6 +81,12 @@ interface FavoriteQuery {
     @Query("delete from widget where name = :name")
     fun deleteWidget(name: String)
 
+    @Query("delete from movie where title = :name")
+    fun deleteMovieFavoriteByName(name: String)
+
+    @Query("delete from tv where name = :name")
+    fun deleteTvFavoriteByName(name: String)
+
     @Query("select * from widget")
     fun widgetData(): List<FilmWidgetData>
 

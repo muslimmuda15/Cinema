@@ -33,43 +33,12 @@ class FavoriteProvide : ContentProvider() {
         uriMatcher.addURI(BuildConfig.PROVIDE_NAME, "tv/#", Status.TV_ID);
     }
 
-    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
-        favoriteModel.deleteWidgetFavorite(uri.lastPathSegment ?: "none")
-        return favoriteModel.countAllFavoriteMovie()
-    }
-
-    override fun getType(uri: Uri): String? {
-        TODO("Implement this to handle requests for the MIME type of the data" +
-                "at the given URI")
-    }
-
-    override fun insert(uri: Uri, values: ContentValues?): Uri? {
-        when(uriMatcher.match(uri)){
-            Status.MOVIE -> {
-                val value = values as MovieData
-                val id = favoriteModel.insertMovieFavoriteCursor(value)
-                context?.contentResolver?.notifyChange(uri, null)
-                return ContentUris.withAppendedId(uri, id)
-            }
-            Status.TV -> {
-                val value = values as TvData
-                val id = favoriteModel.insertTvFavoriteCursor(value)
-                context?.contentResolver?.notifyChange(uri, null)
-                return ContentUris.withAppendedId(uri, id)
-            }
-            else -> {
-                throw SQLException("Failed insert rom into $uri")
-            }
-        }
-    }
-
     override fun onCreate(): Boolean {
         favoriteModel = FavoriteModel(App.context)
         return true
     }
 
-    override fun query(uri: Uri, projection: Array<String>?, selection: String?,
-                       selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
+    override fun query(uri: Uri, projection: Array<String>?, selection: String?, selectionArgs: Array<String>?, sortOrder: String?): Cursor? {
         when(uriMatcher.match(uri)){
             Status.MOVIE -> {
                 return favoriteModel.getFavoriteMovieCursor()
@@ -83,8 +52,47 @@ class FavoriteProvide : ContentProvider() {
         }
     }
 
-    override fun update(uri: Uri, values: ContentValues?, selection: String?,
-                        selectionArgs: Array<String>?): Int {
-        TODO("Implement this to handle requests to update one or more rows.")
+    override fun insert(uri: Uri, values: ContentValues?): Uri? {
+        val _uri: Uri
+        when(uriMatcher.match(uri)){
+            Status.MOVIE -> {
+                val value = values as MovieData
+                val id = favoriteModel.insertMovieFavoriteCursor(value)
+                context?.contentResolver?.notifyChange(CONTENT_URI1, null)
+                _uri = ContentUris.withAppendedId(uri, id)
+            }
+            Status.TV -> {
+                val value = values as TvData
+                val id = favoriteModel.insertTvFavoriteCursor(value)
+                context?.contentResolver?.notifyChange(CONTENT_URI2, null)
+                _uri = ContentUris.withAppendedId(uri, id)
+            }
+            else -> {
+                throw SQLException("Failed insert rom into $uri")
+            }
+        }
+        return _uri
+    }
+
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<String>?): Int {
+        when(uriMatcher.match(uri)) {
+            Status.MOVIE -> {
+                favoriteModel.deleteMovieFavoriteByName(selection ?: "none")
+                return favoriteModel.countAllFavoriteMovie()
+            }
+            Status.TV -> {
+                favoriteModel.deleteTvFavoriteByName(selection ?: "none")
+                return favoriteModel.countAllFavoriteTv()
+            }
+        }
+        return 0
+    }
+
+    override fun getType(uri: Uri): String? {
+        return null
+    }
+
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<String>?): Int {
+        return 0
     }
 }

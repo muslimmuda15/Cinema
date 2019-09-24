@@ -30,11 +30,6 @@
         <activity
             android:name=".ui.movie.MovieDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <provider
-            android:name=".externalprovide.FavoriteProvide"
-            android:authorities="favorite"
-            android:enabled="true"
-            android:exported="true" />
 
         <receiver android:name=".widget.FavoriteWidget">
             <intent-filter>
@@ -49,14 +44,23 @@
         <service
             android:name=".widget.StackWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <provider
+            android:name=".externalprovide.FavoriteProvide"
+            android:authorities="com.app.rachmad.movie"
+            android:enabled="true"
+            android:exported="true"
+            android:writePermission="com.app.rachmad.WRITE_DATABASE"
+            android:readPermission="com.app.rachmad.READ_DATABASE"/>
     </application>
     <permission
-        android:name="com.dicoding.mynotesapp.WRITE_DATABASE"
+        android:name="com.app.rachmad.WRITE_DATABASE"
         android:protectionLevel="normal" />
 
     <permission
-        android:name="com.dicoding.mynotesapp.READ_DATABASE"
+        android:name="com.app.rachmad.READ_DATABASE"
         android:protectionLevel="normal" />
+
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.INTERNET" />

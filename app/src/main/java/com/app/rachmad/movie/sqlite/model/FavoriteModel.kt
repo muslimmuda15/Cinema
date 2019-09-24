@@ -127,6 +127,10 @@ class FavoriteModel(c: Context) {
 
     fun deleteWidgetFavorite(name: String) = database?.favoriteDatabase()?.deleteWidget(name)
 
+    fun deleteMovieFavoriteByName(name: String) = database?.favoriteDatabase()?.deleteMovieFavoriteByName(name)
+
+    fun deleteTvFavoriteByName(name: String) = database?.favoriteDatabase()?.deleteTvFavoriteByName(name)
+
     fun getWIdgetFavoriteLive(): LiveData<List<FilmWidgetData>>{
         var data: LiveData<List<FilmWidgetData>> = MutableLiveData()
         database?.let {
