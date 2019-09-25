@@ -10,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.reminder.ReminderActivity"></activity>
+        <activity
+            android:name=".ui.reminder.ReminderActivity" />
         <activity
             android:name=".ui.tv.TvDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
