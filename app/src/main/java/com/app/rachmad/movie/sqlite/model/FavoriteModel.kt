@@ -53,11 +53,13 @@ class FavoriteModel(c: Context) {
         return favoriteList
     }
 
-    fun getFavoriteMovieCursor(): Cursor{
-        return database!!.favoriteDatabase().getFavoriteMovieCursor()
-    }
+    fun getFavoriteMovieCursor(): Cursor = database!!.favoriteDatabase().getFavoriteMovieCursor()
 
     fun getFavoriteTvCursor(): Cursor = database!!.favoriteDatabase().getFavoriteTvCursor()
+
+    fun getSingleFavoriteMovieCursor(id: Int): Cursor = database!!.favoriteDatabase().getFavoriteMovie(id)
+
+    fun getSingleFavoriteTvCursor(id: Int): Cursor = database!!.favoriteDatabase().getFavoriteTv(id)
 
     fun getFavoriteTvStackList(): LiveData<List<TvData>>{
         var favoriteList: LiveData<List<TvData>> = MutableLiveData()
@@ -125,11 +127,11 @@ class FavoriteModel(c: Context) {
 
     fun getWidgetFavorite(): List<FilmWidgetData>? = database?.favoriteDatabase()?.widgetData()
 
-    fun deleteWidgetFavorite(name: String) = database?.favoriteDatabase()?.deleteWidget(name)
+    fun deleteWidgetFavorite(id: Int) = database?.favoriteDatabase()?.deleteWidget(id)
 
-    fun deleteMovieFavoriteByName(name: String) = database?.favoriteDatabase()?.deleteMovieFavoriteByName(name)
+    fun deleteMovieFavoriteById(id: Int) = database?.favoriteDatabase()?.deleteMovieFavoriteById(id)
 
-    fun deleteTvFavoriteByName(name: String) = database?.favoriteDatabase()?.deleteTvFavoriteByName(name)
+    fun deleteTvFavoriteById(id: Int) = database?.favoriteDatabase()?.deleteTvFavoriteById(id)
 
     fun getWIdgetFavoriteLive(): LiveData<List<FilmWidgetData>>{
         var data: LiveData<List<FilmWidgetData>> = MutableLiveData()

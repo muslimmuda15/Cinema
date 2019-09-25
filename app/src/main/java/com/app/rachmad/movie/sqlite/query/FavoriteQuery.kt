@@ -33,6 +33,12 @@ interface FavoriteQuery {
     @Query("select * from tv")
     fun getFavoriteTvCursor(): Cursor
 
+    @Query("select * from movie where id = :id")
+    fun getFavoriteMovie(id: Int): Cursor
+
+    @Query("select * from tv where id = :id")
+    fun getFavoriteTv(id: Int): Cursor
+
     @Query("select * from tv")
     fun getFavoriteTvList(): DataSource.Factory<Int, TvData>
 
@@ -78,14 +84,14 @@ interface FavoriteQuery {
     @Insert(onConflict = REPLACE)
     fun insertWidget(filwmWidgetData: FilmWidgetData)
 
-    @Query("delete from widget where name = :name")
-    fun deleteWidget(name: String)
+    @Query("delete from widget where id = :id")
+    fun deleteWidget(id: Int)
 
-    @Query("delete from movie where title = :name")
-    fun deleteMovieFavoriteByName(name: String)
+    @Query("delete from movie where id = :id")
+    fun deleteMovieFavoriteById(id: Int)
 
-    @Query("delete from tv where name = :name")
-    fun deleteTvFavoriteByName(name: String)
+    @Query("delete from tv where id = :id")
+    fun deleteTvFavoriteById(id: Int)
 
     @Query("select * from widget")
     fun widgetData(): List<FilmWidgetData>

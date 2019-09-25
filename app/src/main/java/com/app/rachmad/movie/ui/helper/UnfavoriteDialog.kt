@@ -26,11 +26,11 @@ class UnfavoriteDialog(val c: Context, val viewModel: ListModel, val data: Any) 
         yes.setOnClickListener {
             if(data is MovieData) {
                 viewModel.deleteMovieFavorite(data)
-                viewModel.deleteFilmWidget(data.title)
+                viewModel.deleteFilmWidget(data.id)
             }
             else if (data is TvData) {
                 viewModel.deleteTvFavorite(data)
-                viewModel.deleteFilmWidget(data.name)
+                viewModel.deleteFilmWidget(data.id)
             }
             dismiss()
         }

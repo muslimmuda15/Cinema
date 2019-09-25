@@ -83,7 +83,7 @@ class ListModel: ViewModel(){
     fun isFavoritedTv(id: Int): Boolean = favoriteModel.isFavoritedTv(id)
 
     fun insertFilmWidget(filmWidgetData: FilmWidgetData) = favoriteModel.insertWidgetFavorite(filmWidgetData)
-    fun deleteFilmWidget(name: String) = favoriteModel.deleteWidgetFavorite(name)
+    fun deleteFilmWidget(id: Int) = favoriteModel.deleteWidgetFavorite(id)
     fun getFilmWidget(): List<FilmWidgetData>? = favoriteModel.getWidgetFavorite()
     fun getFilmWidgetLive(): LiveData<List<FilmWidgetData>> = favoriteModel.getWIdgetFavoriteLive()
 }
