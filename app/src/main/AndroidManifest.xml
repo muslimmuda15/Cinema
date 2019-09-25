@@ -10,10 +10,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ui.reminder.ReminderActivity"></activity>
         <activity
             android:name=".ui.tv.TvDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ui.FavoriteActivity"
             android:label="@string/favorite_title"
@@ -31,6 +31,14 @@
             android:name=".ui.movie.MovieDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
+        <provider
+            android:name=".externalprovide.FavoriteProvide"
+            android:authorities="com.app.rachmad.movie"
+            android:enabled="true"
+            android:exported="true"
+            android:readPermission="com.app.rachmad.READ_DATABASE"
+            android:writePermission="com.app.rachmad.WRITE_DATABASE" />
+
         <receiver android:name=".widget.FavoriteWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -40,18 +48,20 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/favorite_widget_info" />
         </receiver>
+        <receiver android:name=".alarm.AlarmReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+            </intent-filter>
+        </receiver>
 
+        <service
+            android:name=".service.CinemaService"
+            android:enabled="true"
+            android:exported="true"
+            android:stopWithTask="false" />
         <service
             android:name=".widget.StackWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-        <provider
-            android:name=".externalprovide.FavoriteProvide"
-            android:authorities="com.app.rachmad.movie"
-            android:enabled="true"
-            android:exported="true"
-            android:writePermission="com.app.rachmad.WRITE_DATABASE"
-            android:readPermission="com.app.rachmad.READ_DATABASE"/>
     </application>
     <permission
         android:name="com.app.rachmad.WRITE_DATABASE"
@@ -60,7 +70,6 @@
     <permission
         android:name="com.app.rachmad.READ_DATABASE"
         android:protectionLevel="normal" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-permission android:name="android.permission.INTERNET" />

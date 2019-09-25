@@ -50,4 +50,10 @@ interface AccessSite{
             @Query("language") language: String
     ): Call<TvDetailData>
 
+    @GET("/3/discover/movie?api_key=${BuildConfig.Key}")
+    fun movieAt(
+            @Query("primary_release_date.gte") gte: String,
+            @Query("primary_release_date.lte") lte: String,
+            @Query("language") language: String
+    ): Call<MovieBaseData>
 }

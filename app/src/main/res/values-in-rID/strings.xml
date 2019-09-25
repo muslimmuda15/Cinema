@@ -33,4 +33,13 @@
     <string name="appwidget_text">Sinema favorite Anda</string>
     <string name="add_widget">Tambah widget</string>
     <string name="no_view">Favorite kosong</string>
+
+    <string name="notif_title">Sinema</string>
+    <string name="notif_description">Lihat, ada sinema terbaru apa sekarang</string>
+
+    <string name="release_reminder_title">Pengingat rilis</string>
+    <string name="release_reminder_description">Pengingat pemberitahuan tontonan yang rilis hari ini</string>
+
+    <string name="daily_reminder_title">Penigngat harian</string>
+    <string name="daily_reminder_description">Pengingat untuk masuk ke App</string>
 </resources>

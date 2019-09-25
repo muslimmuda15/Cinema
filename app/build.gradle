@@ -10,12 +10,13 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "com.app.rachmad.movie"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled true
     }
     buildTypes {
         debug {
@@ -87,4 +88,10 @@ dependencies {
 
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
+
+    implementation 'com.loopj.android:android-async-http:1.4.9'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+//    implementation 'androidx.work:work-runtime-ktx:2.2.0'
 }

@@ -12,9 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.app.rachmad.movie.App
 import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.TvData
+import com.app.rachmad.movie.alarm.AlarmReceiver
+import com.app.rachmad.movie.service.CinemaService
 import com.app.rachmad.movie.ui.movie.MOVIE_EXTRA
 import com.app.rachmad.movie.ui.movie.MovieDetailsActivity
 import com.app.rachmad.movie.ui.tv.TV_EXTRA
@@ -65,6 +68,9 @@ class MainActivity : BaseActivity(), MovieItemFragment.OnMovieClickListener, TvI
                 }
             }
         })
+
+        val intent = Intent(this, CinemaService::class.java)
+        startService(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

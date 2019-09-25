@@ -34,7 +34,7 @@ class FavoriteProvide : ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
-        favoriteModel = FavoriteModel(App.context)
+        favoriteModel = FavoriteModel(context!!)
         return true
     }
 
