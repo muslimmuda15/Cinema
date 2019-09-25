@@ -24,6 +24,7 @@ import com.app.rachmad.movie.helper.Status
 import com.app.rachmad.movie.ui.BaseActivity
 import com.app.rachmad.movie.ui.FavoriteActivity
 import com.app.rachmad.movie.ui.helper.UnfavoriteDialog
+import com.app.rachmad.movie.ui.reminder.ReminderActivity
 import com.app.rachmad.movie.widget.FavoriteWidget
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -257,6 +258,10 @@ class MovieDetailsActivity : BaseActivity() {
             }
             R.id.favorite_list -> {
                 val intent = Intent(this, FavoriteActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.reminder -> {
+                val intent = Intent(this, ReminderActivity::class.java)
                 startActivity(intent)
             }
         }

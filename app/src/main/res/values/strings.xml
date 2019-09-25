@@ -44,4 +44,8 @@
 
     <string name="daily_reminder_title">Daily Reminder</string>
     <string name="daily_reminder_description">Reminder for return the app</string>
+
+    <string name="reminder">Reminder Option</string>
+    <string name="on">on</string>
+    <string name="off">off</string>
 </resources>

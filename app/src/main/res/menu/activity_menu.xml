@@ -22,6 +22,12 @@
                 android:icon="@drawable/ic_translate_black_24dp"
                 android:title="@string/language"
                 app:showAsAction="ifRoom" />
+
+            <item
+                android:id="@+id/reminder"
+                android:icon="@drawable/ic_access_alarms_black_24dp"
+                android:title="@string/reminder"
+                app:showAsAction="ifRoom" />
         </menu>
     </item>
 </menu>

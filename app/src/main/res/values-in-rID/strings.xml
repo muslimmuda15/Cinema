@@ -42,4 +42,8 @@
 
     <string name="daily_reminder_title">Penigngat harian</string>
     <string name="daily_reminder_description">Pengingat untuk masuk ke App</string>
+
+    <string name="reminder">Opsi Reminder</string>
+    <string name="on">nyala</string>
+    <string name="off">mati</string>
 </resources>

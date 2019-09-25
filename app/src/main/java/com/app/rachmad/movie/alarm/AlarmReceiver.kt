@@ -22,11 +22,18 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.text.SimpleDateFormat
 import java.util.*
+import android.content.Context.ALARM_SERVICE
+import androidx.core.content.ContextCompat.getSystemService
 
 const val NOTIF_TITLE = "NotifTitle"
 const val NOTIF_MESSAGE = "NotifMessage"
 const val NOTIF_TYPE = "NotifType"
 class AlarmReceiver : BroadcastReceiver() {
+    var releaseAlarm: AlarmManager? = null
+    var dailyAlarm: AlarmManager? = null
+
+    var releasePendingIntent: PendingIntent? = null
+    var dailyPendingIntent: PendingIntent? = null
     override fun onReceive(context: Context, intent: Intent) {
         val title = intent.getStringExtra(NOTIF_TITLE)
         val message = intent.getStringExtra(NOTIF_MESSAGE)
@@ -45,6 +52,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val call = service.movieAt(now, now, LanguageProvide.getLanguage(c))
         call.enqueue(object : Callback<MovieBaseData> {
             override fun onFailure(call: Call<MovieBaseData>, t: Throwable) {
+                showAlarmNotification(c, "No movie can display this day", t.message ?: "")
                 t.printStackTrace()
             }
 
@@ -67,46 +75,44 @@ class AlarmReceiver : BroadcastReceiver() {
         })
     }
 
-    fun repeatingAlarm(c: Context, title: String, message: String){
-        val alarmManager = c.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        for(i in 1 .. 2) {
-            val intent = Intent(c, AlarmReceiver::class.java)
-            intent.putExtra(NOTIF_TITLE, title)
-            intent.putExtra(NOTIF_MESSAGE, message)
-            intent.putExtra(NOTIF_TYPE, i)
+    fun releaseRepeatingAlarm(c: Context, title: String, message: String){
+        releaseAlarm = c.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(c, AlarmReceiver::class.java)
+        intent.putExtra(NOTIF_TITLE, title)
+        intent.putExtra(NOTIF_MESSAGE, message)
+        intent.putExtra(NOTIF_TYPE, 1)
 
-//            val calendar = GregorianCalendar.getInstance()
-//            calendar.timeInMillis = System.currentTimeMillis()
-//            calendar.add(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR))
-//            when(i) {
-//                1 -> {
-//                    calendar.set(Calendar.HOUR_OF_DAY, 7)
-//                }
-//                2 -> {
-//                    calendar.set(Calendar.HOUR_OF_DAY, 8)
-//                }
-//            }
-//            calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE))
-//            calendar.set(Calendar.SECOND, calendar.get(Calendar.SECOND))
-//            calendar.set(Calendar.DATE, calendar.get(Calendar.DATE))
-//            calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-//            calendar.set(Calendar.MILLISECOND, calendar.get(Calendar.MILLISECOND))
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 7)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
 
-            val calendar = Calendar.getInstance()
-            when(i) {
-                1 -> {
-                    calendar.set(Calendar.HOUR_OF_DAY, 7)
-                }
-                2 -> {
-                    calendar.set(Calendar.HOUR_OF_DAY, 8)
-                }
-            }
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
+        releasePendingIntent = PendingIntent.getBroadcast(c, 1, intent, 0)
+        releaseAlarm?.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, releasePendingIntent)
+    }
 
-            val pendingIntent = PendingIntent.getBroadcast(c, i, intent, 0)
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
-        }
+    fun dailyRepeatingAlarm(c: Context, title: String, message: String){
+        dailyAlarm = c.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(c, AlarmReceiver::class.java)
+        intent.putExtra(NOTIF_TITLE, title)
+        intent.putExtra(NOTIF_MESSAGE, message)
+        intent.putExtra(NOTIF_TYPE, 2)
+
+        val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 8)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+
+        dailyPendingIntent = PendingIntent.getBroadcast(c, 2, intent, 0)
+        dailyAlarm?.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, dailyPendingIntent)
+    }
+
+    fun stopReleaseAlarm(c: Context){
+        releaseAlarm?.cancel(releasePendingIntent)
+    }
+
+    fun stopDailyAlarm(c: Context){
+        dailyAlarm?.cancel(dailyPendingIntent)
     }
 
     private fun showAlarmNotification(c: Context, title: String, message: String){

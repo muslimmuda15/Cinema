@@ -16,13 +16,12 @@ import com.app.rachmad.movie.App
 import com.app.rachmad.movie.R
 import com.app.rachmad.movie.`object`.MovieData
 import com.app.rachmad.movie.`object`.TvData
-import com.app.rachmad.movie.alarm.AlarmReceiver
-import com.app.rachmad.movie.service.CinemaService
 import com.app.rachmad.movie.ui.movie.MOVIE_EXTRA
 import com.app.rachmad.movie.ui.movie.MovieDetailsActivity
 import com.app.rachmad.movie.ui.tv.TV_EXTRA
 import com.app.rachmad.movie.ui.tv.TvDetailsActivity
 import com.app.rachmad.movie.ui.movie.MovieItemFragment
+import com.app.rachmad.movie.ui.reminder.ReminderActivity
 import com.app.rachmad.movie.ui.tv.TvItemFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -68,9 +67,6 @@ class MainActivity : BaseActivity(), MovieItemFragment.OnMovieClickListener, TvI
                 }
             }
         })
-
-        val intent = Intent(this, CinemaService::class.java)
-        startService(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +100,10 @@ class MainActivity : BaseActivity(), MovieItemFragment.OnMovieClickListener, TvI
             }
             R.id.favorite_list -> {
                 val intent = Intent(this, FavoriteActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.reminder -> {
+                val intent = Intent(this, ReminderActivity::class.java)
                 startActivity(intent)
             }
         }

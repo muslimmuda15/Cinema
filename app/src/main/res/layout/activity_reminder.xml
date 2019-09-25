@@ -39,7 +39,9 @@
         <Switch
             android:id="@+id/release_switch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textOff="@string/off"
+            android:textOn="@string/on"/>
     </LinearLayout>
 
     <LinearLayout
@@ -72,6 +74,8 @@
         <Switch
             android:id="@+id/daily_switch"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textOff="@string/off"
+            android:textOn="@string/on"/>
     </LinearLayout>
 </LinearLayout>
